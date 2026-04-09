@@ -564,7 +564,24 @@ function addTooltipStyles() {
       padding: 20px;
       box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
       max-width: 360px;
+      width: calc(100vw - 32px); /* Responsive width */
       border: 1px solid rgba(240, 73, 35, 0.2);
+    }
+    
+    @media (max-width: 640px) {
+      .tooltip-content {
+        max-width: calc(100vw - 32px);
+        padding: 16px;
+        border-radius: 12px;
+      }
+      
+      .tooltip-title {
+        font-size: 16px !important;
+      }
+      
+      .tooltip-message {
+        font-size: 13px !important;
+      }
     }
     
     .dark .tooltip-content {
