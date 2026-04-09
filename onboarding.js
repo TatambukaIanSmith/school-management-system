@@ -416,38 +416,59 @@ function createTooltip(element, step, stepIndex, tourKey) {
 function positionTooltip(tooltip, element, position = 'bottom') {
   const rect = element.getBoundingClientRect();
   const tooltipRect = tooltip.getBoundingClientRect();
+  const padding = 16;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
   
   tooltip.style.position = 'fixed';
   tooltip.style.zIndex = '10000';
   
   let top, left;
   
-  switch (position) {
-    case 'top':
-      top = rect.top - tooltipRect.height - 16;
-      left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-      break;
-    case 'bottom':
-      top = rect.bottom + 16;
-      left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
-      break;
-    case 'left':
-      top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
-      left = rect.left - tooltipRect.width - 16;
-      break;
-    case 'right':
-      top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
-      left = rect.right + 16;
-      break;
-    default:
-      top = rect.bottom + 16;
-      left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+  // On mobile, always center the tooltip
+  if (viewportWidth < 640) {
+    // Center horizontally
+    left = (viewportWidth - tooltipRect.width) / 2;
+    
+    // Position vertically with preference for bottom, but adjust if needed
+    if (position === 'top' && rect.top > tooltipRect.height + padding * 2) {
+      top = rect.top - tooltipRect.height - padding;
+    } else if (rect.bottom + tooltipRect.height + padding * 2 < viewportHeight) {
+      top = rect.bottom + padding;
+    } else if (rect.top > tooltipRect.height + padding * 2) {
+      top = rect.top - tooltipRect.height - padding;
+    } else {
+      // If neither top nor bottom works, center vertically
+      top = (viewportHeight - tooltipRect.height) / 2;
+    }
+  } else {
+    // Desktop positioning (original logic)
+    switch (position) {
+      case 'top':
+        top = rect.top - tooltipRect.height - 16;
+        left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+        break;
+      case 'bottom':
+        top = rect.bottom + 16;
+        left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+        break;
+      case 'left':
+        top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+        left = rect.left - tooltipRect.width - 16;
+        break;
+      case 'right':
+        top = rect.top + (rect.height / 2) - (tooltipRect.height / 2);
+        left = rect.right + 16;
+        break;
+      default:
+        top = rect.bottom + 16;
+        left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+    }
   }
   
-  // Keep tooltip within viewport
-  const padding = 16;
-  top = Math.max(padding, Math.min(top, window.innerHeight - tooltipRect.height - padding));
-  left = Math.max(padding, Math.min(left, window.innerWidth - tooltipRect.width - padding));
+  // Ensure tooltip stays within viewport bounds
+  top = Math.max(padding, Math.min(top, viewportHeight - tooltipRect.height - padding));
+  left = Math.max(padding, Math.min(left, viewportWidth - tooltipRect.width - padding));
   
   tooltip.style.top = `${top}px`;
   tooltip.style.left = `${left}px`;
@@ -566,11 +587,14 @@ function addTooltipStyles() {
       max-width: 360px;
       width: calc(100vw - 32px); /* Responsive width */
       border: 1px solid rgba(240, 73, 35, 0.2);
+      max-height: calc(100vh - 100px); /* Prevent overflow */
+      overflow-y: auto; /* Allow scrolling if needed */
     }
     
     @media (max-width: 640px) {
       .tooltip-content {
         max-width: calc(100vw - 32px);
+        max-height: calc(100vh - 80px);
         padding: 16px;
         border-radius: 12px;
       }
@@ -581,6 +605,21 @@ function addTooltipStyles() {
       
       .tooltip-message {
         font-size: 13px !important;
+        margin-bottom: 12px !important;
+      }
+      
+      .tooltip-footer {
+        gap: 8px !important;
+      }
+      
+      .btn-primary, .btn-secondary {
+        padding: 10px 16px !important;
+        font-size: 13px !important;
+        flex: 1;
+      }
+      
+      .tooltip-actions {
+        width: 100%;
       }
     }
     
