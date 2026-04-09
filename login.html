@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - School Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              50:  '#fff4f0',
+              100: '#ffe4d9',
+              200: '#ffc4ae',
+              300: '#ff9a7a',
+              400: '#ff6b42',
+              500: '#f04923',
+              600: '#de2d0c',
+              700: '#b8230a',
+              800: '#961f0e',
+              900: '#7c1e13',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --brand: #f04923;
+      --brand-light: #ff6b42;
+      --brand-dark: #de2d0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark body, body.dark-mode {
+      background: #0f0d0c;
+      color: #f0ebe8;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      transition: box-shadow 0.25s;
+    }
+
+    .dark .glass-card {
+      background: rgba(30,22,18,0.72);
+      border: 1px solid rgba(255,107,66,0.12);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .btn-brand {
+      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+    }
+
+    .btn-brand:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+    }
+
+    .btn-brand:active { transform: translateY(0); }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #f04923;
+      box-shadow: 0 0 0 3px rgba(240,73,35,0.12);
+    }
+
+    .dark input, .dark select {
+      background: rgba(30,22,18,0.6);
+      border-color: rgba(255,107,66,0.2);
+      color: #f0ebe8;
+    }
+
+    .dark input::placeholder { color: #8a7a74; }
+
+    .mesh-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .mesh-bg::before, .mesh-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+
+    .mesh-bg::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      top: -100px; right: -100px;
+    }
+
+    .mesh-bg::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+
+    .dark .mesh-bg::before { opacity: 0.12; }
+    .dark .mesh-bg::after { opacity: 0.1; }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(0,0,0,0.1);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      background: rgba(255,255,255,0.8);
+      color: #1e1612;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .dark .form-input {
+      background: rgba(30,22,18,0.6);
+      border-color: rgba(255,107,66,0.2);
+      color: #f0ebe8;
+    }
+
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background: rgba(240,73,35,0.2);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active { background: #f04923; }
+
+    .toggle-switch .knob {
+      width: 18px; height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.active .knob { transform: translateX(20px); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-card { animation: fadeIn 0.5s ease; }
+  </style>
+</head>
+<body id="body-root">
+
+<div class="mesh-bg"></div>
+
+<div class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md">
+    <!-- Logo & Title -->
+    <div class="text-center mb-8 auth-card">
+      <div class="w-16 h-16 rounded-2xl btn-brand flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <h1 class="font-display text-3xl text-gray-900 dark:text-white mb-2">Welcome Back</h1>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">Sign in to access the school system</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="glass-card rounded-3xl p-8 auth-card" style="animation-delay: 0.1s">
+      <form id="login-form" class="space-y-5">
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+          <input type="email" id="email" placeholder="your.email@school.com" class="form-input" required />
+          <p class="text-red-400 text-xs mt-1.5 hidden" id="err-email">Please enter a valid email</p>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Password</label>
+          <div class="relative">
+            <input type="password" id="password" placeholder="Enter your password" class="form-input pr-12" required />
+            <button type="button" onclick="togglePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <svg id="eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+          <p class="text-red-400 text-xs mt-1.5 hidden" id="err-password">Password is required</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="login-error" class="hidden p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+          <p class="text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="login-error-text">Invalid credentials</span>
+          </p>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full btn-brand py-3 rounded-2xl font-semibold text-base flex items-center justify-center gap-2">
+          <span>Sign In</span>
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-4 bg-white/50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400">Don't have an account?</span>
+        </div>
+      </div>
+
+      <!-- Sign Up Link -->
+      <a href="signup.html" class="block w-full py-3 rounded-2xl font-semibold text-base text-center border-2 border-gray-200 dark:border-gray-700 hover:border-brand-400 dark:hover:border-brand-500 transition-colors text-gray-700 dark:text-gray-300">
+        Create Account
+      </a>
+    </div>
+
+    <!-- Dark Mode Toggle -->
+    <div class="flex items-center justify-center gap-3 mt-6">
+      <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
+      </svg>
+      <div class="toggle-switch" id="dark-toggle" onclick="toggleDark()">
+        <div class="knob"></div>
+      </div>
+      <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Take Exam - School Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              50:  '#fff4f0',
+              100: '#ffe4d9',
+              200: '#ffc4ae',
+              300: '#ff9a7a',
+              400: '#ff6b42',
+              500: '#f04923',
+              600: '#de2d0c',
+              700: '#b8230a',
+              800: '#961f0e',
+              900: '#7c1e13',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --brand: #f04923;
+      --brand-light: #ff6b42;
+      --brand-dark: #de2d0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark body, body.dark-mode {
+      background: #0f0d0c;
+      color: #f0ebe8;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .dark .glass-card {
+      background: rgba(30,22,18,0.72);
+      border: 1px solid rgba(255,107,66,0.12);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .btn-brand {
+      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+    }
+
+    .btn-brand:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+    }
+
+    .mesh-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .mesh-bg::before, .mesh-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+
+    .mesh-bg::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      top: -100px; right: -100px;
+    }
+
+    .mesh-bg::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+
+    .dark .mesh-bg::before { opacity: 0.12; }
+    .dark .mesh-bg::after { opacity: 0.1; }
+
+    .question-nav-btn {
+      transition: all 0.2s;
+    }
+
+    .question-nav-btn.answered {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgb(34, 197, 94);
+      color: rgb(34, 197, 94);
+    }
+
+    .question-nav-btn.current {
+      background: linear-gradient(135deg, #ff6b42, #de2d0c);
+      color: white;
+      border-color: transparent;
+    }
+
+    .timer-warning {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .option-radio:checked + label {
+      background: rgba(240, 73, 35, 0.1);
+      border-color: #f04923;
+      color: #f04923;
+    }
+  </style>
+</head>
+<body id="body-root">
+
+<div class="mesh-bg"></div>
+
+<!-- Timer Bar -->
+<div class="fixed top-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-800 z-50">
+  <div id="timer-bar" class="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 transition-all duration-1000"></div>
+</div>
+
+<!-- Header -->
+<div class="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="font-display text-xl text-gray-900 dark:text-white" id="exam-title">Exam Title</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400" id="exam-info">Subject • Duration</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <p class="text-xs text-gray-500 dark:text-gray-400">Time Remaining</p>
+          <p class="text-2xl font-bold" id="timer">00:00</p>
+        </div>
+        <button onclick="confirmSubmit()" class="btn-brand px-6 py-2 rounded-xl font-semibold text-sm">
+          Submit Exam
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Question Navigation Sidebar -->
+    <div class="lg:col-span-1">
+      <div class="glass-card rounded-2xl p-4 sticky top-24">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">Questions</h3>
+        <div id="question-nav" class="grid grid-cols-5 lg:grid-cols-4 gap-2">
+          <!-- Populated by JS -->
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 mb-2">
+            <div class="w-6 h-6 rounded border-2 border-gray-300"></div>
+            <span>Not Answered</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+            <div class="w-6 h-6 rounded border-2 border-green-500 bg-green-50 dark:bg-green-900/20"></div>
+            <span>Answered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question Display -->
+    <div class="lg:col-span-3">
+      <div class="glass-card rounded-2xl p-6 sm:p-8 mb-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="font-semibold text-gray-900 dark:text-white">
+            Question <span id="current-q-num">1</span> of <span id="total-q-num">10</span>
+          </h2>
+          <span class="text-sm text-gray-500 dark:text-gray-400">
+            <span id="current-q-marks">5</span> marks
+          </span>
+        </div>
+
+        <div id="question-container">
+          <!-- Question content populated by JS -->
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <button onclick="previousQuestion()" id="prev-btn" class="px-6 py-2 rounded-xl font-semibold text-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
+            ← Previous
+          </button>
+          <button onclick="nextQuestion()" id="next-btn" class="btn-brand px-6 py-2 rounded-xl font-semibold text-sm">
+            Next →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Submit Confirmation Modal -->
+<div id="submit-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="glass-card rounded-3xl p-8 max-w-md w-full">
+    <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Submit Exam?</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-2">
+      You have answered <span id="answered-count" class="font-semibold text-brand-600">0</span> out of <span id="total-count" class="font-semibold">0</span> questions.
+    </p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+      Once submitted, you cannot change your answers.
+    </p>
+    <div class="flex gap-3">
+      <button onclick="closeSubmitModal()" class="flex-1 px-6 py-3 rounded-xl font-semibold border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
+        Cancel
+      </button>
+      <button onclick="submitExam()" class="flex-1 btn-brand px-6 py-3 rounded-xl font-semibold">
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="take-exam.js"></script>
+</body>
+</html>

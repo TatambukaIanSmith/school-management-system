@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - School Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              50:  '#fff4f0',
+              100: '#ffe4d9',
+              200: '#ffc4ae',
+              300: '#ff9a7a',
+              400: '#ff6b42',
+              500: '#f04923',
+              600: '#de2d0c',
+              700: '#b8230a',
+              800: '#961f0e',
+              900: '#7c1e13',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --brand: #f04923;
+      --brand-light: #ff6b42;
+      --brand-dark: #de2d0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark body, body.dark-mode {
+      background: #0f0d0c;
+      color: #f0ebe8;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      transition: box-shadow 0.25s;
+    }
+
+    .dark .glass-card {
+      background: rgba(30,22,18,0.72);
+      border: 1px solid rgba(255,107,66,0.12);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .navbar-glass {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      border-bottom: 1px solid rgba(240,73,35,0.12);
+    }
+
+    .dark .navbar-glass {
+      background: rgba(15,13,12,0.88);
+      border-bottom: 1px solid rgba(240,73,35,0.2);
+    }
+
+    .btn-brand {
+      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+    }
+
+    .btn-brand:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+    }
+
+    .btn-brand:active { transform: translateY(0); }
+
+    .mesh-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .mesh-bg::before, .mesh-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+
+    .mesh-bg::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      top: -100px; right: -100px;
+    }
+
+    .mesh-bg::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+
+    .dark .mesh-bg::before { opacity: 0.12; }
+    .dark .mesh-bg::after { opacity: 0.1; }
+
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background: rgba(240,73,35,0.2);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active { background: #f04923; }
+
+    .toggle-switch .knob {
+      width: 18px; height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.active .knob { transform: translateX(20px); }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { animation: fadeIn 0.5s ease; }
+
+    .stat-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 48px rgba(240,73,35,0.15);
+    }
+
+    .quick-action {
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .quick-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(240,73,35,0.2);
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+      background: rgba(240,73,35,0.08);
+    }
+
+    .nav-link.active {
+      background: rgba(240,73,35,0.12);
+      color: #f04923;
+      font-weight: 600;
+    }
+
+    .activity-item {
+      animation: slideIn 0.3s ease forwards;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+  </style>
+</head>
+<body id="body-root">
+
+<div class="mesh-bg"></div>
+
+<!-- Navbar -->
+<nav class="navbar-glass sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <span class="font-display text-lg text-gray-900 dark:text-white hidden sm:block">School Registration</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center gap-2">
+        <a href="dashboard.html" class="nav-link active text-sm text-gray-700 dark:text-gray-300">Dashboard</a>
+        <a href="index.html" class="nav-link text-sm text-gray-700 dark:text-gray-300">Students</a>
+        <a href="exams.html" id="exams-link" class="nav-link text-sm text-gray-700 dark:text-gray-300" style="display: none;">Exams</a>
+        <a href="users.html" id="users-link" class="nav-link text-sm text-gray-700 dark:text-gray-300" style="display: none;">Users</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- Notifications -->
+      <div class="relative">
+        <button onclick="toggleNotifications()" id="notifications-button" title="Notifications"
+          class="w-9 h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group relative">
+          <svg class="w-4 h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+          </svg>
+          <span id="notification-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold">0</span>
+        </button>
+        
+        <!-- Notifications Panel -->
+        <div id="notifications-panel" class="hidden absolute right-0 mt-2 w-80 glass-card rounded-2xl shadow-xl overflow-hidden z-50">
+          <div class="p-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <h3 class="font-semibold text-gray-900 dark:text-white">Notifications</h3>
+            <button onclick="markAllAsRead()" class="text-xs text-brand-500 hover:text-brand-600 font-medium">Mark all read</button>
+          </div>
+          <div id="notifications-list" class="max-h-96 overflow-y-auto">
+            <!-- Populated by notifications.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- User Info -->
+      <div id="user-info" class="flex items-center gap-3 px-3 py-1.5 rounded-full glass-card text-sm">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Dark mode toggle -->
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
+        </svg>
+        <div class="toggle-switch" id="dark-toggle" onclick="toggleDark()">
+          <div class="knob"></div>
+        </div>
+        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+  <!-- Welcome Section -->
+  <div class="mb-8 fade-in">
+    <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-2">
+      Welcome back, <span id="user-name" style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">User</span>
+    </h1>
+    <p class="text-gray-500 dark:text-gray-400" id="welcome-message">Here's what's happening with your school today.</p>
+  </div>
+
+  <!-- Dashboard Content Container -->
+  <div id="dashboard-content">
+    <!-- Content will be dynamically loaded based on role -->
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="mt-16 border-t border-gray-200 dark:border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+          </div>
+          <span class="font-display text-lg text-gray-900 dark:text-white">School Registration</span>
+        </div>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Modern student management system for educational institutions.</p>
+      </div>
+      
+      <!-- Quick Links -->
+      <div>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">Quick Links</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="dashboard.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Dashboard</a></li>
+          <li><a href="index.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Students</a></li>
+          <li><a href="exams.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Exams</a></li>
+          <li><a href="users.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Users</a></li>
+        </ul>
+      </div>
+      
+      <!-- Support -->
+      <div>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">Support</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Help Center</a></li>
+          <li><a href="#" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Documentation</a></li>
+          <li><a href="#" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Contact Us</a></li>
+          <li><a href="#" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Bottom Bar -->
+    <div class="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-gray-500 dark:text-gray-400">© 2024 School Registration System. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="text-gray-400 hover:text-brand-500 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-brand-500 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+        </a>
+        <a href="#" class="text-gray-400 hover:text-brand-500 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="notifications.js"></script>
+<script src="onboarding.js"></script>
+<script src="profiles.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

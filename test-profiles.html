@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Profile Switcher</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .glass-card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-8">
+  <h1 class="text-2xl font-bold mb-4">Profile Switcher Test</h1>
+  
+  <div class="bg-white p-4 rounded-lg shadow mb-4">
+    <h2 class="font-semibold mb-2">Instructions:</h2>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+      <li>Make sure you're logged in (have a session in localStorage)</li>
+      <li>The profile avatar should appear below</li>
+      <li>Click it to see the dropdown menu</li>
+    </ol>
+  </div>
+  
+  <div class="bg-white p-6 rounded-lg shadow">
+    <p class="text-sm text-gray-600 mb-4">Profile Switcher:</p>
+    <div id="user-info" class="inline-block"></div>
+  </div>
+  
+  <div class="mt-4 bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+    <p class="text-sm"><strong>Debug Info:</strong></p>
+    <pre id="debug" class="text-xs mt-2 bg-white p-2 rounded"></pre>
+  </div>
+
+  <script src="profiles.js"></script>
+  <script>
+    // Debug info
+    const session = JSON.parse(localStorage.getItem('srs_session') || '{}');
+    const profiles = JSON.parse(localStorage.getItem('srs_profiles') || '[]');
+    
+    document.getElementById('debug').textContent = JSON.stringify({
+      hasSession: !!session.userId,
+      sessionUser: session.fullName || 'None',
+      profileCount: profiles.length,
+      profilesLoaded: typeof renderProfileSwitcher === 'function'
+    }, null, 2);
+    
+    // Test button click
+    window.testClick = function() {
+      console.log('Test button clicked!');
+      alert('Button is clickable!');
+    };
+  </script>
+  
+  <button onclick="testClick()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600">
+    Test Button (Should be clickable)
+  </button>
+</body>
+</html>

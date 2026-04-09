@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Management - School Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              50:  '#fff4f0',
+              100: '#ffe4d9',
+              200: '#ffc4ae',
+              300: '#ff9a7a',
+              400: '#ff6b42',
+              500: '#f04923',
+              600: '#de2d0c',
+              700: '#b8230a',
+              800: '#961f0e',
+              900: '#7c1e13',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --brand: #f04923;
+      --brand-light: #ff6b42;
+      --brand-dark: #de2d0c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark body, body.dark-mode {
+      background: #0f0d0c;
+      color: #f0ebe8;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      transition: box-shadow 0.25s;
+    }
+
+    .dark .glass-card {
+      background: rgba(30,22,18,0.72);
+      border: 1px solid rgba(255,107,66,0.12);
+      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .navbar-glass {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      border-bottom: 1px solid rgba(240,73,35,0.12);
+    }
+
+    .dark .navbar-glass {
+      background: rgba(15,13,12,0.88);
+      border-bottom: 1px solid rgba(240,73,35,0.2);
+    }
+
+    .btn-brand {
+      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+    }
+
+    .btn-brand:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+    }
+
+    .mesh-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .mesh-bg::before, .mesh-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+
+    .mesh-bg::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      top: -100px; right: -100px;
+    }
+
+    .mesh-bg::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+
+    .dark .mesh-bg::before { opacity: 0.12; }
+    .dark .mesh-bg::after { opacity: 0.1; }
+
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background: rgba(240,73,35,0.2);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active { background: #f04923; }
+
+    .toggle-switch .knob {
+      width: 18px; height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.active .knob { transform: translateX(20px); }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(0,0,0,0.1);
+      font-size: 15px;
+      background: rgba(255,255,255,0.8);
+      color: #1e1612;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .dark .form-input {
+      background: rgba(30,22,18,0.6);
+      border-color: rgba(255,107,66,0.2);
+      color: #f0ebe8;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #f04923;
+      box-shadow: 0 0 0 3px rgba(240,73,35,0.12);
+    }
+  </style>
+</head>
+<body id="body-root">
+
+<div class="mesh-bg"></div>
+
+<!-- Toast Container -->
+<div id="toast-container" style="position: fixed; top: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+
+<!-- Navbar -->
+<nav class="navbar-glass sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <span class="font-display text-lg text-gray-900 dark:text-white hidden sm:block">School Registration</span>
+      </div>
+
+      <div class="hidden md:flex items-center gap-2">
+        <a href="dashboard.html" class="px-4 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">Dashboard</a>
+        <a href="index.html" class="px-4 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">Students</a>
+        <a href="exams.html" class="px-4 py-2 rounded-xl text-sm font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20">Exams</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div id="user-info" class="flex items-center gap-3 px-3 py-1.5 rounded-full glass-card text-sm"></div>
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
+        </svg>
+        <div class="toggle-switch" id="dark-toggle" onclick="toggleDark()">
+          <div class="knob"></div>
+        </div>
+        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  <div class="mb-8">
+    <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-2">
+      Exam <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Management</span>
+    </h1>
+    <p class="text-gray-500 dark:text-gray-400">Create, manage, and grade exams for your students.</p>
+  </div>
+
+  <!-- View Toggle -->
+  <div class="flex gap-4 mb-6">
+    <button onclick="showView('list')" id="btn-list" class="px-6 py-2 rounded-xl font-semibold text-sm btn-brand">
+      My Exams
+    </button>
+    <button onclick="showView('create')" id="btn-create" class="px-6 py-2 rounded-xl font-semibold text-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
+      Create New Exam
+    </button>
+    <button onclick="showView('submissions')" id="btn-submissions" class="px-6 py-2 rounded-xl font-semibold text-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
+      Submissions
+    </button>
+  </div>
+
+  <!-- Exam List View -->
+  <div id="view-list" class="glass-card rounded-3xl p-6 sm:p-8">
+    <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-6">My Exams</h2>
+    <div id="exams-list" class="space-y-4">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+  <!-- Create Exam View -->
+  <div id="view-create" class="hidden">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 mb-6">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-6">Create New Exam</h2>
+      
+      <form id="exam-form" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Exam Title *</label>
+            <input type="text" id="exam-title" placeholder="e.g. Mathematics Mid-Term" class="form-input" required />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
+            <input type="text" id="exam-subject" placeholder="e.g. Mathematics" class="form-input" required />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Class *</label>
+            <select id="exam-class" class="form-input" required>
+              <option value="">Select class</option>
+              <option>Senior 1</option>
+              <option>Senior 2</option>
+              <option>Senior 3</option>
+              <option>Senior 4</option>
+              <option>Senior 5</option>
+              <option>Senior 6</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Duration (minutes) *</label>
+            <input type="number" id="exam-duration" placeholder="60" class="form-input" required />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Total Marks *</label>
+            <input type="number" id="exam-marks" placeholder="100" class="form-input" required />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Due Date *</label>
+            <input type="datetime-local" id="exam-due" class="form-input" required />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Instructions</label>
+          <textarea id="exam-instructions" rows="3" placeholder="Enter exam instructions..." class="form-input"></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="glass-card rounded-3xl p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white">Questions</h3>
+        <button onclick="addQuestion()" class="btn-brand px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Add Question
+        </button>
+      </div>
+
+      <div id="questions-container" class="space-y-4">
+        <!-- Questions added dynamically -->
+      </div>
+
+      <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button onclick="saveExam()" class="btn-brand px-6 py-3 rounded-xl font-semibold flex-1 sm:flex-none">
+          Save Exam
+        </button>
+        <button onclick="showView('list')" class="px-6 py-3 rounded-xl font-semibold border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submissions View -->
+  <div id="view-submissions" class="hidden glass-card rounded-3xl p-6 sm:p-8">
+    <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-6">Student Submissions</h2>
+    <div id="submissions-list">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+
+</main>
+
+<script src="exams.js"></script>
+</body>
+</html>
