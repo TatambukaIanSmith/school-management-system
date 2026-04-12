@@ -249,6 +249,10 @@ let isActive = false;
 
 // ── Initialize Onboarding ──────────────────────────
 function initOnboarding(page, role) {
+  // Onboarding disabled - annotations removed
+  return;
+  
+  /* Original code - disabled
   // Check if user has completed onboarding
   const completed = getCompletedTours();
   const tourKey = `${page}_${role}`;
@@ -268,6 +272,7 @@ function initOnboarding(page, role) {
   setTimeout(() => {
     startTour(tour, tourKey);
   }, 1000);
+  */
 }
 
 // ── Start Tour ─────────────────────────────────────
