@@ -254,6 +254,20 @@
     </div>
 
     <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
+      <!-- Back/Forward Navigation -->
+      <div class="flex items-center gap-1">
+        <button onclick="window.history.back()" title="Go Back" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button onclick="window.history.forward()" title="Go Forward" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+
       <!-- Notifications -->
       <div class="relative">
         <button onclick="toggleNotifications()" id="notifications-button" title="Notifications"

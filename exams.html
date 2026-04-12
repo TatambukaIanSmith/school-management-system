@@ -181,15 +181,15 @@
 
 <!-- Navbar -->
 <nav class="navbar-glass sticky top-0 z-40">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-    <div class="flex items-center gap-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="max-w-7xl mx-auto px-2 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2 sm:gap-6 flex-shrink-0">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
           </svg>
         </div>
-        <span class="font-display text-lg text-gray-900 dark:text-white hidden sm:block">School Registration</span>
+        <span class="font-display text-base sm:text-lg text-gray-900 dark:text-white hidden sm:block">School Registration</span>
       </div>
 
       <div class="hidden md:flex items-center gap-2">
@@ -199,9 +199,23 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-4">
-      <div id="user-info" class="flex items-center gap-3 px-3 py-1.5 rounded-full glass-card text-sm"></div>
-      <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
+      <!-- Back/Forward Navigation -->
+      <div class="flex items-center gap-1">
+        <button onclick="window.history.back()" title="Go Back" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button onclick="window.history.forward()" title="Go Forward" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+
+      <div id="user-info" class="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full glass-card text-sm"></div>
+      <div class="hidden sm:flex items-center gap-2">
         <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
         </svg>
