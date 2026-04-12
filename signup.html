@@ -440,6 +440,66 @@
 
 <script src="auth.js"></script>
 
+<script>
+// School Registration Enhancement
+(function() {
+  // Get school ID from URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const schoolId = urlParams.get('school');
+  
+  if (schoolId) {
+    // Load school data
+    const schoolData = JSON.parse(localStorage.getItem('schoolData') || '{}');
+    
+    if (schoolData.id === schoolId) {
+      // Add school banner at the top of the form
+      const form = document.getElementById('signup-form');
+      if (form) {
+        const banner = document.createElement('div');
+        banner.className = 'mb-6 p-4 rounded-xl';
+        banner.style.background = 'linear-gradient(135deg, rgba(240,73,35,0.1), rgba(255,107,66,0.05))';
+        banner.style.border = '1.5px solid rgba(240,73,35,0.2)';
+        banner.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background: rgba(240,73,35,0.15)">
+              <svg class="w-5 h-5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">Joining: ${schoolData.name}</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">You're creating an account for this school</p>
+            </div>
+          </div>
+        `;
+        form.insertBefore(banner, form.firstChild);
+      }
+      
+      // Store school ID for form submission
+      window.joiningSchoolId = schoolId;
+      
+      // Update page title
+      const titleElement = document.querySelector('h1');
+      if (titleElement) {
+        titleElement.textContent = `Join ${schoolData.name}`;
+      }
+    }
+  }
+  
+  // Intercept form submission to add school ID
+  const originalSubmit = window.handleSignup || function() {};
+  window.handleSignup = function(event) {
+    if (window.joiningSchoolId) {
+      // Add school ID to the user data before saving
+      const schoolId = window.joiningSchoolId;
+      // This will be picked up by auth.js
+      sessionStorage.setItem('pendingSchoolId', schoolId);
+    }
+    return originalSubmit(event);
+  };
+})();
+</script>
+
 <!-- Footer -->
 <footer class="mt-16 border-t border-gray-200 dark:border-gray-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -475,7 +535,7 @@
       </div>
     </div>
     <div class="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm text-gray-500 dark:text-gray-400">© 2024 School Registration System. All rights reserved.</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">ï¿½ 2024 School Registration System. All rights reserved.</p>
       <div class="flex items-center gap-4">
         <a href="#" class="text-gray-400 hover:text-brand-500 transition-colors">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
