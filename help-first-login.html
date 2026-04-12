@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>First Time Login Guide - Help Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              500: '#f04923',
+              600: '#de2d0c',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+    }
+    .dark body { background: #0f0d0c; }
+    .glass-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(240,73,35,0.1);
+    }
+    .dark .glass-card {
+      background: rgba(15,13,12,0.85);
+      border: 1px solid rgba(240,73,35,0.2);
+    }
+    .btn-brand {
+      background: linear-gradient(135deg, #ff6b42, #de2d0c);
+    }
+  </style>
+</head>
+<body id="body-root" class="min-h-screen">
+
+<nav class="glass-card sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="help-center.html" class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <span class="font-display text-lg text-gray-900 dark:text-white">Help Center</span>
+    </a>
+    <a href="help-center.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">← Back</a>
+  </div>
+</nav>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+  <div class="mb-8">
+    <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-4">
+      First Time <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Login Guide</span>
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 text-lg">Learn how to access your account and navigate the dashboard</p>
+  </div>
+
+  <div class="space-y-6">
+    <div class="glass-card rounded-2xl p-6">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Logging In</h2>
+      <ol class="list-decimal list-inside text-gray-600 dark:text-gray-400 space-y-3">
+        <li>Go to the login page</li>
+        <li>Enter your email address</li>
+        <li>Enter your password</li>
+        <li>Click "Sign In"</li>
+      </ol>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Understanding Your Dashboard</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        After logging in, you'll see your personalized dashboard with:
+      </p>
+      <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
+        <li><strong>Statistics:</strong> Quick overview of key numbers</li>
+        <li><strong>Quick Actions:</strong> Common tasks you can perform</li>
+        <li><strong>Navigation:</strong> Sidebar and navbar for easy access</li>
+        <li><strong>Profile Menu:</strong> Click your avatar to manage profiles</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Navigation Tips</h2>
+      <div class="space-y-3">
+        <div class="border-l-4 border-brand-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white">Use the Sidebar</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Access main sections like Dashboard, Students, Exams, and Users</p>
+        </div>
+        <div class="border-l-4 border-blue-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white">Back/Forward Buttons</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Use navigation buttons at the top of each page</p>
+        </div>
+        <div class="border-l-4 border-green-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white">Profile Dropdown</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Click your avatar to switch profiles or sign out</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 text-center">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-2">Need More Help?</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">Explore other help topics</p>
+      <a href="help-center.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90">
+        Back to Help Center
+      </a>
+    </div>
+  </div>
+</main>
+
+<script src="auth.js"></script>
+</body>
+</html>

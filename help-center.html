@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Center - School Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {
+              500: '#f04923',
+              600: '#de2d0c',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+    }
+    .dark body { background: #0f0d0c; }
+    .glass-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(240,73,35,0.1);
+    }
+    .dark .glass-card {
+      background: rgba(15,13,12,0.85);
+      border: 1px solid rgba(240,73,35,0.2);
+    }
+    .btn-brand {
+      background: linear-gradient(135deg, #ff6b42, #de2d0c);
+    }
+  </style>
+</head>
+<body id="body-root" class="min-h-screen">
+
+<!-- Navbar -->
+<nav class="glass-card sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="dashboard.html" class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <span class="font-display text-lg text-gray-900 dark:text-white">School Registration</span>
+    </a>
+    <a href="dashboard.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">Back to Dashboard</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+  <div class="text-center mb-12">
+    <h1 class="font-display text-5xl text-gray-900 dark:text-white mb-4">
+      Help <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Center</span>
+    </h1>
+    <p class="text-gray-600 dark:text-gray-400 text-lg">Find answers to common questions and get support</p>
+  </div>
+
+  <!-- Search Box -->
+  <div class="glass-card rounded-2xl p-4 mb-12">
+    <div class="relative">
+      <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      <input type="text" placeholder="Search for help..." class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500" />
+    </div>
+  </div>
+
+  <!-- FAQ Categories -->
+  <div class="grid md:grid-cols-2 gap-6 mb-12">
+    <!-- Getting Started -->
+    <div class="glass-card rounded-2xl p-6">
+      <div class="w-12 h-12 rounded-xl btn-brand flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Getting Started</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Learn the basics of using the system</p>
+      <ul class="space-y-2 text-sm">
+        <li><a href="signup.html" class="text-brand-500 hover:text-brand-600">How to create an account</a></li>
+        <li><a href="help-first-login.html" class="text-brand-500 hover:text-brand-600">First time login guide</a></li>
+        <li><a href="help-user-roles.html" class="text-brand-500 hover:text-brand-600">Understanding user roles</a></li>
+      </ul>
+    </div>
+
+    <!-- Student Management -->
+    <div class="glass-card rounded-2xl p-6">
+      <div class="w-12 h-12 rounded-xl btn-brand flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Student Management</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Managing student records and data</p>
+      <ul class="space-y-2 text-sm">
+        <li><a href="help-register-student.html" class="text-brand-500 hover:text-brand-600">How to register a student</a></li>
+        <li><a href="help-edit-student.html" class="text-brand-500 hover:text-brand-600">Editing student information</a></li>
+        <li><a href="help-import-csv.html" class="text-brand-500 hover:text-brand-600">Importing student data (CSV)</a></li>
+      </ul>
+    </div>
+
+    <!-- Exam System -->
+    <div class="glass-card rounded-2xl p-6">
+      <div class="w-12 h-12 rounded-xl btn-brand flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Exam System</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Creating and managing exams</p>
+      <ul class="space-y-2 text-sm">
+        <li><a href="help-create-exam.html" class="text-brand-500 hover:text-brand-600">Creating a new exam</a></li>
+        <li><a href="help-grading.html" class="text-brand-500 hover:text-brand-600">Grading submissions</a></li>
+        <li><a href="help-exam-results.html" class="text-brand-500 hover:text-brand-600">Viewing exam results</a></li>
+      </ul>
+    </div>
+
+    <!-- Account & Settings -->
+    <div class="glass-card rounded-2xl p-6">
+      <div class="w-12 h-12 rounded-xl btn-brand flex items-center justify-center mb-4">
+        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Account & Settings</h3>
+      <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Managing your account preferences</p>
+      <ul class="space-y-2 text-sm">
+        <li><a href="help-change-password.html" class="text-brand-500 hover:text-brand-600">Changing your password</a></li>
+        <li><a href="help-profile-management.html" class="text-brand-500 hover:text-brand-600">Profile management</a></li>
+        <li><a href="help-dark-mode.html" class="text-brand-500 hover:text-brand-600">Dark mode settings</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contact Support -->
+  <div class="glass-card rounded-2xl p-8 text-center">
+    <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-2">Still need help?</h2>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">Our support team is here to assist you</p>
+    <a href="contact.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90 transition-opacity">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      Contact Support
+    </a>
+  </div>
+</main>
+
+<script src="auth.js"></script>
+</body>
+</html>

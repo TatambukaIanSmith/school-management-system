@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Register a Student - Help Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['DM Sans', 'sans-serif'], display: ['DM Serif Display', 'serif'] },
+          colors: { brand: { 500: '#f04923', 600: '#de2d0c' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'DM Sans', sans-serif; background: #f7f3f0; }
+    .dark body { background: #0f0d0c; }
+    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(240,73,35,0.1); }
+    .dark .glass-card { background: rgba(15,13,12,0.85); border: 1px solid rgba(240,73,35,0.2); }
+    .btn-brand { background: linear-gradient(135deg, #ff6b42, #de2d0c); }
+  </style>
+</head>
+<body id="body-root" class="min-h-screen">
+<nav class="glass-card sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="help-center.html" class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <span class="font-display text-lg text-gray-900 dark:text-white">Help Center</span>
+    </a>
+    <a href="help-center.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">? Back</a>
+  </div>
+</nav>
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+  <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-4">
+    How to Register a <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Student</span>
+  </h1>
+  <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">Step-by-step guide to adding new students to the system</p>
+
+  <div class="space-y-6">
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">1</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Navigate to Students Page</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">From your dashboard, click on "Students" in the sidebar menu. This will take you to the student management page.</p>
+          <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 text-sm text-gray-700 dark:text-gray-300">
+            💡 Tip: You can also use the quick action button "Register Student" from the dashboard if available for your role.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">2</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Click "Add Student" Button</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Look for the orange "Add Student" button at the top of the students page and click it. A registration form will appear.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">3</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Fill in Student Information</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Complete all required fields in the registration form:</p>
+          <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 ml-4">
+            <li><strong>Full Name:</strong> Student's complete legal name</li>
+            <li><strong>Email Address:</strong> Valid email for login and communication</li>
+            <li><strong>Student ID:</strong> Unique identifier (auto-generated or manual)</li>
+            <li><strong>Date of Birth:</strong> Student's birth date</li>
+            <li><strong>Class/Grade:</strong> Current class or grade level</li>
+            <li><strong>Contact Number:</strong> Phone number for emergencies</li>
+            <li><strong>Address:</strong> Residential address (optional)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">4</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Set Initial Password</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Create a temporary password for the student. They will be prompted to change it on first login.</p>
+          <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm text-amber-800 dark:text-amber-200">
+            ⚠️ Important: Make sure to securely share the login credentials with the student or their guardian.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">5</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Review and Submit</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Double-check all information for accuracy, then click the "Register Student" button to save the record.</p>
+          <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-sm text-green-800 dark:text-green-200">
+            ✓ Success: The student will appear in your students list and can now log in to the system.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Common Issues & Solutions</h3>
+      <div class="space-y-3">
+        <div class="border-l-4 border-red-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Email Already Exists</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Each email must be unique. Check if the student is already registered or use a different email.</p>
+        </div>
+        <div class="border-l-4 border-blue-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Student ID Conflict</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">If using manual IDs, ensure the ID number isn't already assigned to another student.</p>
+        </div>
+        <div class="border-l-4 border-amber-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Missing Required Fields</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">All fields marked with an asterisk (*) must be filled before submission.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-3">Next Steps</h3>
+      <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+        <li>• <a href="help-edit-student.html" class="text-brand-500 hover:text-brand-600">Learn how to edit student information</a></li>
+        <li>• <a href="help-import-csv.html" class="text-brand-500 hover:text-brand-600">Import multiple students using CSV</a></li>
+        <li>• <a href="help-create-exam.html" class="text-brand-500 hover:text-brand-600">Create exams for your students</a></li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 text-center">
+      <a href="help-center.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90">
+        Back to Help Center
+      </a>
+    </div>
+  </div>
+</main>
+<script src="auth.js"></script>
+</body>
+</html>

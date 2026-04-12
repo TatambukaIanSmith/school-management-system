@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding User Roles - Help Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['DM Sans', 'sans-serif'], display: ['DM Serif Display', 'serif'] },
+          colors: { brand: { 500: '#f04923', 600: '#de2d0c' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'DM Sans', sans-serif; background: #f7f3f0; }
+    .dark body { background: #0f0d0c; }
+    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(240,73,35,0.1); }
+    .dark .glass-card { background: rgba(15,13,12,0.85); border: 1px solid rgba(240,73,35,0.2); }
+    .btn-brand { background: linear-gradient(135deg, #ff6b42, #de2d0c); }
+  </style>
+</head>
+<body id="body-root" class="min-h-screen">
+
+<nav class="glass-card sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="help-center.html" class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <span class="font-display text-lg text-gray-900 dark:text-white">Help Center</span>
+    </a>
+    <a href="help-center.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">← Back</a>
+  </div>
+</nav>
+
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+  <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-4">
+    Understanding <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">User Roles</span>
+  </h1>
+  <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">Learn about different roles and their permissions</p>
+
+  <div class="space-y-4">
+    <div class="glass-card rounded-2xl p-6 border-l-4 border-red-500">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Administrator</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-3">Full system access with all permissions</p>
+      <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <li>Manage all users and students</li>
+        <li>Create, edit, and delete records</li>
+        <li>Access all system features</li>
+        <li>Export data</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 border-l-4 border-blue-500">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Registrar</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-3">Manage student registrations and records</p>
+      <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <li>Register new students</li>
+        <li>Edit student information</li>
+        <li>Delete student records</li>
+        <li>Export student data</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 border-l-4 border-green-500">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Teacher</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-3">Create exams and grade submissions</p>
+      <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <li>View student information</li>
+        <li>Create and manage exams</li>
+        <li>Grade student submissions</li>
+        <li>Export data</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 border-l-4 border-yellow-500">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Secretary</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-3">Manage records and documentation</p>
+      <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <li>Create and edit records</li>
+        <li>View all student data</li>
+        <li>Export documentation</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 border-l-4 border-cyan-500">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Bursar</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-3">Access financial records and student data</p>
+      <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <li>View student records</li>
+        <li>Edit financial information</li>
+        <li>Export data</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 border-l-4 border-pink-500">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Student</h3>
+      <p class="text-gray-600 dark:text-gray-400 mb-3">Take exams and view results</p>
+      <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 space-y-1">
+        <li>View available exams</li>
+        <li>Submit exam answers</li>
+        <li>View grades and results</li>
+        <li>Manage profile</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 text-center">
+      <a href="help-center.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90">
+        Back to Help Center
+      </a>
+    </div>
+  </div>
+</main>
+
+<script src="auth.js"></script>
+</body>
+</html>

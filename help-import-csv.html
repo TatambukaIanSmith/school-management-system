@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Importing Student Data (CSV) - Help Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['DM Sans', 'sans-serif'], display: ['DM Serif Display', 'serif'] },
+          colors: { brand: { 500: '#f04923', 600: '#de2d0c' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'DM Sans', sans-serif; background: #f7f3f0; }
+    .dark body { background: #0f0d0c; }
+    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(240,73,35,0.1); }
+    .dark .glass-card { background: rgba(15,13,12,0.85); border: 1px solid rgba(240,73,35,0.2); }
+    .btn-brand { background: linear-gradient(135deg, #ff6b42, #de2d0c); }
+  </style>
+</head>
+<body id="body-root" class="min-h-screen">
+<nav class="glass-card sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <a href="help-center.html" class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </div>
+      <span class="font-display text-lg text-gray-900 dark:text-white">Help Center</span>
+    </a>
+    <a href="help-center.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">? Back</a>
+  </div>
+</nav>
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+  <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-4">
+    Importing Student Data <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">(CSV)</span>
+  </h1>
+  <p class="text-gray-600 dark:text-gray-400 text-lg mb-8">Bulk import multiple students using CSV files</p>
+
+  <div class="space-y-6">
+    <div class="glass-card rounded-2xl p-6 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">What is CSV Import?</h3>
+      <p class="text-gray-600 dark:text-gray-400">CSV (Comma-Separated Values) import allows you to add multiple students at once by uploading a spreadsheet file. This is perfect for bulk registration at the start of a semester or when transferring from another system.</p>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">1</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Prepare Your CSV File</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Create a spreadsheet with the following columns (in this exact order):</p>
+          <div class="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 overflow-x-auto">
+            <code class="text-green-400 text-sm font-mono">
+              firstName,lastName,email,studentId,dateOfBirth,class,phone,address
+            </code>
+          </div>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">Example row:</p>
+          <div class="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 overflow-x-auto mt-2">
+            <code class="text-blue-400 text-sm font-mono">
+              John,Doe,john.doe@email.com,STU001,2005-03-15,Grade 10,555-0123,123 Main St
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">2</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Save as CSV Format</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">In your spreadsheet application (Excel, Google Sheets, etc.):</p>
+          <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-1 ml-4">
+            <li>Click "File" → "Save As" or "Download"</li>
+            <li>Choose "CSV (Comma delimited)" or "CSV" format</li>
+            <li>Save the file to your computer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">3</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Navigate to Import Page</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Go to the Students page and look for the "Import CSV" or "Bulk Import" button, usually located near the "Add Student" button.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">4</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Upload Your File</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">Click the "Choose File" or "Browse" button, select your CSV file, and click "Upload" or "Import".</p>
+          <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm text-amber-800 dark:text-amber-200">
+            ⚠️ Important: The system will validate your data before importing. Any errors will be displayed for correction.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <div class="flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl btn-brand flex items-center justify-center flex-shrink-0">
+          <span class="text-white font-bold">5</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-display text-xl text-gray-900 dark:text-white mb-2">Review and Confirm</h3>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">The system will show a preview of the students to be imported. Review the list and click "Confirm Import" to complete the process.</p>
+          <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-sm text-green-800 dark:text-green-200">
+            ✓ Success: All students will be added to the system with auto-generated temporary passwords.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">CSV Format Requirements</h3>
+      <div class="space-y-3">
+        <div class="border-l-4 border-blue-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Required Columns</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">firstName, lastName, email, studentId - these must be present and filled</p>
+        </div>
+        <div class="border-l-4 border-green-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Optional Columns</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">dateOfBirth, class, phone, address - can be left empty</p>
+        </div>
+        <div class="border-l-4 border-amber-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Date Format</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Use YYYY-MM-DD format (e.g., 2005-03-15)</p>
+        </div>
+        <div class="border-l-4 border-red-500 pl-4">
+          <p class="font-semibold text-gray-900 dark:text-white text-sm">Unique Values</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Email and studentId must be unique - no duplicates allowed</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Common Import Errors</h3>
+      <div class="space-y-3 text-sm">
+        <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+          <p class="font-semibold text-red-900 dark:text-red-200 mb-1">❌ Duplicate Email/ID</p>
+          <p class="text-red-700 dark:text-red-300">Solution: Check for duplicates in your CSV and ensure no student is already registered with that email or ID.</p>
+        </div>
+        <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+          <p class="font-semibold text-red-900 dark:text-red-200 mb-1">❌ Invalid Date Format</p>
+          <p class="text-red-700 dark:text-red-300">Solution: Use YYYY-MM-DD format for all dates (e.g., 2005-03-15, not 03/15/2005).</p>
+        </div>
+        <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+          <p class="font-semibold text-red-900 dark:text-red-200 mb-1">❌ Missing Required Fields</p>
+          <p class="text-red-700 dark:text-red-300">Solution: Ensure firstName, lastName, email, and studentId are filled for every row.</p>
+        </div>
+        <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+          <p class="font-semibold text-red-900 dark:text-red-200 mb-1">❌ Wrong File Format</p>
+          <p class="text-red-700 dark:text-red-300">Solution: Make sure you saved as .csv, not .xlsx or .xls.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-3">Tips for Success</h3>
+      <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+        <li>✓ Test with a small file (5-10 students) first</li>
+        <li>✓ Keep a backup of your original data</li>
+        <li>✓ Remove any special characters from names and addresses</li>
+        <li>✓ Use consistent formatting throughout the file</li>
+        <li>✓ Double-check email addresses for typos</li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6">
+      <h3 class="font-display text-xl text-gray-900 dark:text-white mb-3">Related Topics</h3>
+      <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+        <li>• <a href="help-register-student.html" class="text-brand-500 hover:text-brand-600">Register students individually</a></li>
+        <li>• <a href="help-edit-student.html" class="text-brand-500 hover:text-brand-600">Edit student information after import</a></li>
+        <li>• <a href="contact.html" class="text-brand-500 hover:text-brand-600">Contact support for import assistance</a></li>
+      </ul>
+    </div>
+
+    <div class="glass-card rounded-2xl p-6 text-center">
+      <a href="help-center.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90">
+        Back to Help Center
+      </a>
+    </div>
+  </div>
+</main>
+<script src="auth.js"></script>
+</body>
+</html>
