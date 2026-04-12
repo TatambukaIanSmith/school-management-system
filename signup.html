@@ -318,6 +318,26 @@
               <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Student</p>
               <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Take Exams</p>
             </div>
+
+            <div class="role-badge glass-card p-4 rounded-2xl text-center border-2 border-transparent" onclick="selectRole('secretary')">
+              <div class="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center" style="background: rgba(240,73,35,0.1)">
+                <svg class="w-5 h-5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Secretary</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Documentation</p>
+            </div>
+
+            <div class="role-badge glass-card p-4 rounded-2xl text-center border-2 border-transparent" onclick="selectRole('bursar')">
+              <div class="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center" style="background: rgba(240,73,35,0.1)">
+                <svg class="w-5 h-5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+              </div>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Bursar</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Financial</p>
+            </div>
           </div>
           <input type="hidden" id="role" required />
           <p class="text-red-400 text-xs mt-2 hidden" id="err-role">Please select a role</p>

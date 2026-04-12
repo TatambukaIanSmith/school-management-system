@@ -63,6 +63,24 @@ const PERMISSIONS = {
     label: 'Security',
     description: 'View only access'
   },
+  secretary: {
+    canView: true,
+    canCreate: true,
+    canEdit: true,
+    canDelete: false,
+    canExport: true,
+    label: 'Secretary',
+    description: 'Manage records and documentation'
+  },
+  bursar: {
+    canView: true,
+    canCreate: false,
+    canEdit: true,
+    canDelete: false,
+    canExport: true,
+    label: 'Bursar',
+    description: 'Financial records and student data'
+  },
   student: {
     canView: false,
     canCreate: false,

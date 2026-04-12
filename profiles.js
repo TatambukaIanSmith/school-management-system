@@ -200,21 +200,21 @@ function renderProfileSwitcher() {
   
   userInfo.innerHTML = `
     <div class="relative profile-switcher-container">
-      <button type="button" onclick="toggleProfileMenu()" style="cursor: pointer;" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: ${color}; cursor: pointer;">
+      <button type="button" onclick="toggleProfileMenu()" style="cursor: pointer;" class="flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity">
+        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold text-white" style="background: ${color}; cursor: pointer;">
           ${avatar}
         </div>
         <div class="hidden sm:block text-left">
           <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">${displayName}</p>
           <p class="text-xs text-gray-500 dark:text-gray-400">${getProfileRoleLabel(session.role)}</p>
         </div>
-        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
       
       <!-- Profile Menu -->
-      <div id="profile-menu" class="hidden absolute right-0 mt-2 w-80 glass-card rounded-2xl shadow-xl overflow-hidden z-50">
+      <div id="profile-menu" class="hidden absolute right-0 mt-2 w-[calc(100vw-1rem)] sm:w-80 max-w-sm glass-card rounded-2xl shadow-xl overflow-hidden z-50">
         <!-- Current Profile -->
         <div class="p-4 border-b border-gray-100 dark:border-white/5">
           <div class="flex items-center gap-3 mb-3">
