@@ -254,20 +254,6 @@
     </div>
 
     <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
-      <!-- Back/Forward Navigation -->
-      <div class="flex items-center gap-1">
-        <button onclick="window.history.back()" title="Go Back" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group">
-          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-        </button>
-        <button onclick="window.history.forward()" title="Go Forward" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl glass-card flex items-center justify-center hover:border-brand-400 transition-all group">
-          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </button>
-      </div>
-
       <!-- Notifications -->
       <div class="relative">
         <button onclick="toggleNotifications()" id="notifications-button" title="Notifications"
@@ -398,6 +384,22 @@
 
 <!-- Main Content -->
 <main class="lg:ml-64 max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+  <!-- Back/Forward Navigation -->
+  <div class="flex items-center gap-2 mb-6">
+    <button onclick="window.history.back()" title="Go Back" class="flex items-center gap-2 px-4 py-2 rounded-xl glass-card hover:border-brand-400 transition-all group">
+      <svg class="w-4 h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-brand-500 transition-colors hidden sm:inline">Back</span>
+    </button>
+    <button onclick="window.history.forward()" title="Go Forward" class="flex items-center gap-2 px-4 py-2 rounded-xl glass-card hover:border-brand-400 transition-all group">
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-brand-500 transition-colors hidden sm:inline">Forward</span>
+      <svg class="w-4 h-4 text-gray-500 group-hover:text-brand-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
 
   <!-- Welcome Section -->
   <div class="mb-8 fade-in">
