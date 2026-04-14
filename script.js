@@ -534,7 +534,7 @@ function renderTable() {
           </span>
         </td>
         <td class="px-4 py-3">
-          <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(240,73,35,0.08);color:#f04923">${highlight(s.classLevel, q)}</span>
+          <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-medium" style="background:rgba(240,73,35,0.08);color:#000000">${highlight(s.classLevel, q)}</span>
         </td>
         <td class="px-4 py-3">
           <span class="inline-flex px-2 py-1 rounded-full text-xs font-medium ${statusColors[status] || statusColors.Active}">
@@ -727,7 +727,7 @@ function updateNavbar() {
     const names = currentUser.fullName.split(' ');
     userInfo.innerHTML = `
       <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+        <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
           ${names.length >= 2 ? names[0].charAt(0).toUpperCase() + names[1].charAt(0).toUpperCase() : currentUser.fullName.charAt(0).toUpperCase()}
         </div>
         <div class="hidden sm:block">
@@ -998,7 +998,7 @@ function printStudentList() {
         }
         h1 {
           text-align: center;
-          color: #f04923;
+          color: #000000;
           margin-bottom: 10px;
         }
         .subtitle {
@@ -1017,7 +1017,7 @@ function printStudentList() {
           text-align: left;
         }
         th {
-          background-color: #f04923;
+          background-color: #000000;
           color: white;
           font-weight: bold;
         }
@@ -1105,3 +1105,4 @@ function printStudentList() {
   printWindow.document.write(html);
   printWindow.document.close();
 }
+

@@ -17,18 +17,7 @@
             display: ['DM Serif Display', 'serif'],
           },
           colors: {
-            brand: {
-              50:  '#fff4f0',
-              100: '#ffe4d9',
-              200: '#ffc4ae',
-              300: '#ff9a7a',
-              400: '#ff6b42',
-              500: '#f04923',
-              600: '#de2d0c',
-              700: '#b8230a',
-              800: '#961f0e',
-              900: '#7c1e13',
-            }
+            brand: {50: '#f9fafb',100: '#f3f4f6',200: '#e5e7eb',300: '#d1d5db',400: '#9ca3af',500: '#000000',600: '#000000',700: '#000000',800: '#000000',900: '#000000'}
           },
         }
       }
@@ -36,9 +25,9 @@
   </script>
   <style>
     :root {
-      --brand: #f04923;
-      --brand-light: #ff6b42;
-      --brand-dark: #de2d0c;
+      --brand: #000000;
+      --brand-light: #1a1a1a;
+      --brand-dark: #000000;
     }
 
     * { box-sizing: border-box; }
@@ -60,25 +49,24 @@
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255,255,255,0.6);
-      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .dark .glass-card {
       background: rgba(30,22,18,0.72);
-      border: 1px solid rgba(255,107,66,0.12);
-      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+      border: 1px solid rgba(26,26,26,0.12);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.3);
     }
 
-    .btn-brand {
-      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+    .btn-brand{background:#000000;
       color: white;
       transition: all 0.2s;
-      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
 
     .btn-brand:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
     }
 
     .mesh-bg {
@@ -99,13 +87,13 @@
 
     .mesh-bg::before {
       width: 600px; height: 600px;
-      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      background: radial-gradient(circle, #1a1a1a 0%, transparent 70%);
       top: -100px; right: -100px;
     }
 
     .mesh-bg::after {
       width: 500px; height: 500px;
-      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      background: radial-gradient(circle, #000000 0%, transparent 70%);
       bottom: -100px; left: -100px;
     }
 
@@ -123,7 +111,7 @@
     }
 
     .question-nav-btn.current {
-      background: linear-gradient(135deg, #ff6b42, #de2d0c);
+      background: linear-gradient(135deg, #1a1a1a, #000000);
       color: white;
       border-color: transparent;
     }
@@ -139,8 +127,8 @@
 
     .option-radio:checked + label {
       background: rgba(240, 73, 35, 0.1);
-      border-color: #f04923;
-      color: #f04923;
+      border-color: #000000;
+      color: #000000;
     }
   </style>
 </head>
@@ -303,3 +291,7 @@
 
 </body>
 </html>
+
+
+
+

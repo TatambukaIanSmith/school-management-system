@@ -56,7 +56,7 @@ function updateUserInfo() {
   const userInfo = document.getElementById('user-info');
   userInfo.innerHTML = `
     <div class="flex items-center gap-2">
-      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
         ${currentUser.fullName.split(' ').length >= 2 ? currentUser.fullName.split(' ')[0].charAt(0).toUpperCase() + currentUser.fullName.split(' ')[1].charAt(0).toUpperCase() : currentUser.fullName.charAt(0).toUpperCase()}
       </div>
       <div class="hidden sm:block">
@@ -144,7 +144,7 @@ function renderUsers() {
       <tr class="user-row border-b border-gray-50 dark:border-white/5 last:border-0" style="animation-delay: ${i * 40}ms">
         <td class="px-4 py-3">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
               ${user.fullName.split(' ').length >= 2 ? user.fullName.split(' ')[0].charAt(0).toUpperCase() + user.fullName.split(' ')[1].charAt(0).toUpperCase() : user.fullName.charAt(0).toUpperCase()}
             </div>
             <div>
@@ -171,7 +171,7 @@ function renderUsers() {
         <td class="px-4 py-3 text-right">
           <div class="flex items-center justify-end gap-2">
             ${!isCurrentUser ? `
-              <button onclick="editUser('${user.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors" style="background: rgba(240,73,35,0.08); color: #f04923; border: 1px solid rgba(240,73,35,0.15);">
+              <button onclick="editUser('${user.id}')" class="px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors" style="background: rgba(240,73,35,0.08); color: #000000; border: 1px solid rgba(240,73,35,0.15);">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                 </svg>
@@ -283,3 +283,4 @@ function toast(msg, type = 'success') {
   container.appendChild(t);
   setTimeout(() => t.remove(), 3100);
 }
+

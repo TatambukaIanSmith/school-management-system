@@ -359,3 +359,4 @@ function isSubmitted() {
   const submissions = JSON.parse(localStorage.getItem(SUBMISSIONS_KEY)) || [];
   return submissions.some(s => s.examId === exam.id && s.studentId === currentUser.userId);
 }
+

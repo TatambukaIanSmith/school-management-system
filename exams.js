@@ -61,7 +61,7 @@ function updateUserInfo() {
   const userInfo = document.getElementById('user-info');
   if (userInfo && currentUser) {
     userInfo.innerHTML = `
-      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
         ${currentUser.fullName.split(' ').length >= 2 ? currentUser.fullName.split(' ')[0].charAt(0).toUpperCase() + currentUser.fullName.split(' ')[1].charAt(0).toUpperCase() : currentUser.fullName.charAt(0).toUpperCase()}
       </div>
       <div class="hidden sm:block">
@@ -399,9 +399,9 @@ function renderSubmissions() {
               <p class="text-xs text-gray-500 dark:text-gray-400">Graded</p>
               <p class="text-lg font-bold text-green-600 dark:text-green-400">${gradedCount}</p>
             </div>
-            <div class="text-center p-2 rounded-xl bg-orange-50 dark:bg-orange-900/20">
+            <div class="text-center p-2 rounded-xl bg-gray-50 dark:bg-gray-900/20">
               <p class="text-xs text-gray-500 dark:text-gray-400">Pending</p>
-              <p class="text-lg font-bold text-orange-600 dark:text-orange-400">${pendingCount}</p>
+              <p class="text-lg font-bold text-gray-600 dark:text-gray-400">${pendingCount}</p>
             </div>
           </div>
           ${gradedCount > 0 ? `
@@ -420,7 +420,7 @@ function renderSubmissions() {
             return `
               <div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-brand-400 transition-colors">
                 <div class="flex items-center gap-3 flex-1">
-                  <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+                  <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
                     ${sub.studentName.charAt(0).toUpperCase()}
                   </div>
                   <div class="flex-1">
@@ -442,7 +442,7 @@ function renderSubmissions() {
                     </button>
                   ` : `
                     <div class="text-right">
-                      <p class="text-lg font-bold text-orange-600 dark:text-orange-400">Pending</p>
+                      <p class="text-lg font-bold text-gray-600 dark:text-gray-400">Pending</p>
                       <p class="text-xs text-gray-500 dark:text-gray-400">Needs grading</p>
                     </div>
                     <button onclick="gradeSubmission('${sub.id}')" class="btn-brand px-4 py-2 rounded-xl text-sm font-semibold hover:scale-105 transition-transform">
@@ -508,7 +508,7 @@ function showGradingModal(submission, exam) {
             <p class="text-xs text-gray-500 dark:text-gray-400">Auto-Graded Score</p>
             <p class="text-lg font-bold text-green-600 dark:text-green-400">${autoGradedScore}/${exam.totalMarks}</p>
           </div>
-          <div class="text-center p-3 rounded-xl bg-orange-50 dark:bg-orange-900/20">
+          <div class="text-center p-3 rounded-xl bg-gray-50 dark:bg-gray-900/20">
             <p class="text-xs text-gray-500 dark:text-gray-400">Time Taken</p>
             <p class="text-lg font-bold text-gray-900 dark:text-white">${Math.floor(submission.timeTaken / 60)} min</p>
           </div>
@@ -523,12 +523,12 @@ function showGradingModal(submission, exam) {
           const isShort = question.type === 'short';
           
           return `
-            <div class="glass-card rounded-2xl p-5 ${isShort ? 'border-2 border-orange-200 dark:border-orange-800' : ''}">
+            <div class="glass-card rounded-2xl p-5 ${isShort ? 'border-2 border-gray-200 dark:border-gray-800' : ''}">
               <div class="flex items-start justify-between mb-3">
                 <h4 class="font-semibold text-gray-900 dark:text-white">Question ${i + 1}</h4>
                 <div class="flex items-center gap-2">
                   ${isShort ? 
-                    '<span class="text-xs px-2 py-1 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">Manual Grading</span>' :
+                    '<span class="text-xs px-2 py-1 rounded-full bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400">Manual Grading</span>' :
                     isCorrect ?
                     '<span class="text-xs px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400">✓ Correct</span>' :
                     '<span class="text-xs px-2 py-1 rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">✗ Incorrect</span>'
@@ -726,3 +726,4 @@ function toast(msg, type = 'success') {
   container.appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
+

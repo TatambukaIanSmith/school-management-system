@@ -336,7 +336,7 @@ function generateProfileColor(role) {
     security: '#f59e0b',
     student: '#ec4899'
   };
-  return colors[role] || '#f04923';
+  return colors[role] || '#000000';
 }
 
 // Get role label
@@ -400,3 +400,4 @@ function initProfiles() {
     }
   }
 }
+

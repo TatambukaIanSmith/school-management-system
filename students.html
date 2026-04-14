@@ -17,18 +17,7 @@
             display: ['DM Serif Display', 'serif'],
           },
           colors: {
-            brand: {
-              50:  '#fff4f0',
-              100: '#ffe4d9',
-              200: '#ffc4ae',
-              300: '#ff9a7a',
-              400: '#ff6b42',
-              500: '#f04923',
-              600: '#de2d0c',
-              700: '#b8230a',
-              800: '#961f0e',
-              900: '#7c1e13',
-            }
+            brand: {50: '#f9fafb',100: '#f3f4f6',200: '#e5e7eb',300: '#d1d5db',400: '#9ca3af',500: '#000000',600: '#000000',700: '#000000',800: '#000000',900: '#000000'}
           },
           backdropBlur: { xs: '2px' },
         }
@@ -37,9 +26,9 @@
   </script>
   <style>
     :root {
-      --brand: #f04923;
-      --brand-light: #ff6b42;
-      --brand-dark: #de2d0c;
+      --brand: #000000;
+      --brand-light: #1a1a1a;
+      --brand-dark: #000000;
     }
 
     * { box-sizing: border-box; }
@@ -62,14 +51,14 @@
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255,255,255,0.6);
-      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
       transition: box-shadow 0.25s;
     }
 
     .dark .glass-card {
       background: rgba(30,22,18,0.72);
-      border: 1px solid rgba(255,107,66,0.12);
-      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+      border: 1px solid rgba(26,26,26,0.12);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.3);
     }
 
     /* Navbar glass */
@@ -77,25 +66,24 @@
       background: rgba(255,255,255,0.82);
       backdrop-filter: blur(30px) saturate(200%);
       -webkit-backdrop-filter: blur(30px) saturate(200%);
-      border-bottom: 1px solid rgba(240,73,35,0.12);
+      border-bottom: 1px solid rgba(0,0,0,0.12);
     }
 
     .dark .navbar-glass {
       background: rgba(15,13,12,0.88);
-      border-bottom: 1px solid rgba(240,73,35,0.2);
+      border-bottom: 1px solid rgba(0,0,0,0.2);
     }
 
     /* Brand gradient button */
-    .btn-brand {
-      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+    .btn-brand{background:#000000;
       color: white;
       transition: all 0.2s;
-      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
 
     .btn-brand:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
     }
 
     .btn-brand:active { transform: translateY(0); }
@@ -103,13 +91,13 @@
     /* Input focus */
     input:focus, select:focus, textarea:focus {
       outline: none;
-      border-color: #f04923;
-      box-shadow: 0 0 0 3px rgba(240,73,35,0.12);
+      border-color: #000000;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.12);
     }
 
     .dark input, .dark select {
       background: rgba(30,22,18,0.6);
-      border-color: rgba(255,107,66,0.2);
+      border-color: rgba(26,26,26,0.2);
       color: #f0ebe8;
     }
 
@@ -122,8 +110,8 @@
       transition: background 0.15s;
     }
 
-    .student-row:hover { background: rgba(240,73,35,0.04); }
-    .dark .student-row:hover { background: rgba(240,73,35,0.08); }
+    .student-row:hover { background: rgba(0,0,0,0.04); }
+    .dark .student-row:hover { background: rgba(0,0,0,0.08); }
 
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -156,7 +144,7 @@
     }
 
     .toast-success {
-      background: rgba(240,73,35,0.92);
+      background: rgba(0,0,0,0.92);
       color: white;
       border: 1px solid rgba(255,255,255,0.2);
     }
@@ -164,14 +152,14 @@
     .toast-error {
       background: rgba(30,22,18,0.92);
       color: #ff9a7a;
-      border: 1px solid rgba(255,107,66,0.3);
+      border: 1px solid rgba(26,26,26,0.3);
     }
 
     .toast-info {
       background: rgba(255,255,255,0.95);
       color: #1e1612;
-      border: 1px solid rgba(240,73,35,0.2);
-      box-shadow: 0 8px 32px rgba(240,73,35,0.15);
+      border: 1px solid rgba(0,0,0,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
     }
 
     @keyframes toastIn {
@@ -187,8 +175,8 @@
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(240,73,35,0.3); border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(240,73,35,0.5); }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.5); }
 
     /* Mesh background */
     .mesh-bg {
@@ -209,13 +197,13 @@
 
     .mesh-bg::before {
       width: 600px; height: 600px;
-      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      background: radial-gradient(circle, #1a1a1a 0%, transparent 70%);
       top: -100px; right: -100px;
     }
 
     .mesh-bg::after {
       width: 500px; height: 500px;
-      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      background: radial-gradient(circle, #000000 0%, transparent 70%);
       bottom: -100px; left: -100px;
     }
 
@@ -225,14 +213,14 @@
     /* Toggle switch */
     .toggle-switch {
       width: 44px; height: 24px;
-      background: rgba(240,73,35,0.2);
+      background: rgba(0,0,0,0.2);
       border-radius: 99px;
       position: relative;
       cursor: pointer;
       transition: background 0.3s;
     }
 
-    .toggle-switch.active { background: #f04923; }
+    .toggle-switch.active { background: #000000; }
 
     .toggle-switch .knob {
       width: 18px; height: 18px;
@@ -256,8 +244,8 @@
       transition: all 0.15s;
     }
 
-    .page-btn:hover { background: rgba(240,73,35,0.1); color: #f04923; }
-    .page-btn.active { background: #f04923; color: white; }
+    .page-btn:hover { background: rgba(0,0,0,0.1); color: #000000; }
+    .page-btn.active { background: #000000; color: white; }
 
     /* Label styles */
     .form-label {
@@ -285,16 +273,16 @@
 
     .dark .form-input {
       background: rgba(30,22,18,0.6);
-      border-color: rgba(255,107,66,0.2);
+      border-color: rgba(26,26,26,0.2);
       color: #f0ebe8;
     }
 
     /* Edit mode row highlight */
-    .editing-row td { background: rgba(240,73,35,0.06) !important; }
+    .editing-row td { background: rgba(0,0,0,0.06) !important; }
 
     /* Stat badge */
     .stat-badge {
-      background: linear-gradient(135deg, #ff6b42, #de2d0c);
+      background: linear-gradient(135deg, #1a1a1a, #000000);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -302,14 +290,14 @@
 
     /* Action buttons */
     .btn-edit {
-      background: rgba(240,73,35,0.08);
-      color: #f04923;
-      border: 1px solid rgba(240,73,35,0.15);
+      background: rgba(0,0,0,0.08);
+      color: #000000;
+      border: 1px solid rgba(0,0,0,0.15);
     }
 
     .btn-edit:hover {
-      background: rgba(240,73,35,0.15);
-      border-color: rgba(240,73,35,0.3);
+      background: rgba(0,0,0,0.15);
+      border-color: rgba(0,0,0,0.3);
     }
 
     .btn-delete {
@@ -338,7 +326,7 @@
 
     /* Search highlight */
     mark.search-hl {
-      background: rgba(240,73,35,0.2);
+      background: rgba(0,0,0,0.2);
       color: inherit;
       border-radius: 3px;
       padding: 0 2px;
@@ -360,7 +348,7 @@
     /* Progress bar */
     .form-progress {
       height: 3px;
-      background: rgba(240,73,35,0.15);
+      background: rgba(0,0,0,0.15);
       border-radius: 99px;
       overflow: hidden;
       margin-bottom: 24px;
@@ -368,7 +356,7 @@
 
     .form-progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #ff6b42, #de2d0c);
+      background: linear-gradient(90deg, #1a1a1a, #000000);
       border-radius: 99px;
       transition: width 0.4s ease;
     }
@@ -511,7 +499,7 @@
   <!-- Header -->
   <div class="text-center pt-2 pb-4">
     <h1 class="font-display text-4xl sm:text-5xl text-gray-900 dark:text-white mb-2">
-      Student <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Registry</span>
+      Student <span style="background: linear-gradient(135deg, #1a1a1a, #000000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Registry</span>
     </h1>
     <p class="text-gray-500 dark:text-gray-400 text-base">Register, manage, and track student records with ease.</p>
   </div>
@@ -725,8 +713,8 @@
 
       <!-- Empty State -->
       <div id="empty-state" class="empty-state py-16 text-center hidden">
-        <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: rgba(240,73,35,0.08)">
-          <svg class="w-8 h-8" style="color: #f04923" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: rgba(0,0,0,0.08)">
+          <svg class="w-8 h-8" style="color: #000000" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
           </svg>
         </div>
@@ -802,3 +790,7 @@
 
 </body>
 </html>
+
+
+
+

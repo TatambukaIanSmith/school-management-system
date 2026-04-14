@@ -131,7 +131,7 @@ function updateUserInfo() {
   
   userInfo.innerHTML = `
     <div class="flex items-center gap-2">
-      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
         ${initials}
       </div>
       <div class="hidden sm:block">
@@ -230,8 +230,8 @@ function renderAdministratorDashboard() {
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Quick Actions</h2>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        ${createQuickAction('Add Student', 'user-add', 'index.html')}
-        ${createQuickAction('View All', 'view-list', 'index.html')}
+        ${createQuickAction('Add Student', 'user-add', 'students.html')}
+        ${createQuickAction('View All', 'view-list', 'students.html')}
         ${createQuickAction('Manage Users', 'users', 'users.html')}
         ${createQuickAction('Export Data', 'download', 'javascript:exportFromDashboard()')}
       </div>
@@ -271,10 +271,10 @@ function renderRegistrarDashboard() {
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Registration Tools</h2>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        ${createQuickAction('New Registration', 'user-add', 'index.html')}
-        ${createQuickAction('View Records', 'view-list', 'index.html')}
+        ${createQuickAction('New Registration', 'user-add', 'students.html')}
+        ${createQuickAction('View Records', 'view-list', 'students.html')}
         ${createQuickAction('Export CSV', 'download', 'javascript:exportFromDashboard()')}
-        ${createQuickAction('Search Student', 'search', 'index.html')}
+        ${createQuickAction('Search Student', 'search', 'students.html')}
       </div>
     </div>
 
@@ -303,9 +303,9 @@ function renderTeacherDashboard() {
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Teacher Tools</h2>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        ${createQuickAction('View Students', 'view-list', 'index.html')}
+        ${createQuickAction('View Students', 'view-list', 'students.html')}
         ${createQuickAction('Manage Exams', 'clipboard-list', 'exams.html')}
-        ${createQuickAction('Update Records', 'edit', 'index.html')}
+        ${createQuickAction('Update Records', 'edit', 'students.html')}
         ${createQuickAction('Export List', 'download', 'javascript:exportFromDashboard()')}
       </div>
     </div>
@@ -343,9 +343,9 @@ function renderCounselorDashboard() {
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Counseling Tools</h2>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        ${createQuickAction('View Students', 'view-list', 'index.html')}
+        ${createQuickAction('View Students', 'view-list', 'students.html')}
         ${createQuickAction('View Exams', 'clipboard-list', 'exams.html')}
-        ${createQuickAction('Update Info', 'edit', 'index.html')}
+        ${createQuickAction('Update Info', 'edit', 'students.html')}
         ${createQuickAction('Export Data', 'download', 'javascript:exportFromDashboard()')}
       </div>
     </div>
@@ -384,8 +384,8 @@ function renderStaffDashboard() {
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Quick Access</h2>
       <div class="grid grid-cols-2 sm:grid-cols-2 gap-4">
-        ${createQuickAction('View Students', 'view-list', 'index.html')}
-        ${createQuickAction('Search', 'search', 'index.html')}
+        ${createQuickAction('View Students', 'view-list', 'students.html')}
+        ${createQuickAction('Search', 'search', 'students.html')}
       </div>
     </div>
 
@@ -414,8 +414,8 @@ function renderSecurityDashboard() {
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Security Access</h2>
       <div class="grid grid-cols-2 gap-4">
-        ${createQuickAction('View Students', 'view-list', 'index.html')}
-        ${createQuickAction('Search ID', 'search', 'index.html')}
+        ${createQuickAction('View Students', 'view-list', 'students.html')}
+        ${createQuickAction('Search ID', 'search', 'students.html')}
       </div>
     </div>
 
@@ -605,7 +605,7 @@ function createStatCard(label, value, icon, color) {
     blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
     indigo: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
     pink: 'bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400',
-    orange: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
+    orange: 'bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400',
     green: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400',
     yellow: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400',
     purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400'
@@ -672,7 +672,7 @@ function renderClassDistribution(distribution) {
               <span class="text-sm font-semibold text-gray-900 dark:text-white">${count} (${percentage}%)</span>
             </div>
             <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div class="h-full rounded-full" style="width: ${percentage}%; background: linear-gradient(90deg, #ff6b42, #de2d0c);"></div>
+              <div class="h-full rounded-full" style="width: ${percentage}%; background: linear-gradient(90deg, #1a1a1a, #de2d0c);"></div>
             </div>
           </div>
         `;
@@ -691,7 +691,7 @@ function renderRecentStudents(studentList) {
       ${studentList.map((s, i) => `
         <div class="activity-item flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" style="animation-delay: ${i * 0.05}s">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
               ${s.fullName.charAt(0).toUpperCase()}
             </div>
             <div>
@@ -784,4 +784,6 @@ function exportFromDashboard() {
   
   alert(`Exported ${students.length} student records`);
 }
+
+
 

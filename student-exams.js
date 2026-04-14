@@ -60,7 +60,7 @@ function updateUserInfo() {
   const userInfo = document.getElementById('user-info');
   if (userInfo && currentUser) {
     userInfo.innerHTML = `
-      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
         ${currentUser.fullName.split(' ').length >= 2 ? currentUser.fullName.split(' ')[0].charAt(0).toUpperCase() + currentUser.fullName.split(' ')[1].charAt(0).toUpperCase() : currentUser.fullName.charAt(0).toUpperCase()}
       </div>
       <div class="hidden sm:block">
@@ -146,7 +146,7 @@ function renderAvailableExams() {
             isPast ?
             '<span class="px-3 py-1 rounded-full text-xs font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">⏰ Closed</span>' :
             isLate ?
-            '<span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">⚠️ Late Entry</span>' :
+            '<span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400">⚠️ Late Entry</span>' :
             '<span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">📝 Available</span>'
           }
         </div>
@@ -165,7 +165,7 @@ function renderAvailableExams() {
           </div>
           <div>
             <p class="text-xs text-gray-500 dark:text-gray-400">Status</p>
-            <p class="text-sm font-semibold ${submitted ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}">
+            <p class="text-sm font-semibold ${submitted ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}">
               ${submitted ? 'Done' : 'Pending'}
             </p>
           </div>
@@ -190,7 +190,7 @@ function renderAvailableExams() {
                 <button onclick="startExam('${exam.id}')" class="btn-brand px-6 py-3 rounded-xl text-sm font-bold hover:scale-105 transition-transform shadow-lg">
                   🚀 Start Exam
                 </button>
-                <p class="text-xs text-orange-600 dark:text-orange-400 mt-1 font-semibold">⚠️ Late entry - Grace period active</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 font-semibold">⚠️ Late entry - Grace period active</p>
               </div>` :
               `<button onclick="startExam('${exam.id}')" class="btn-brand px-6 py-3 rounded-xl text-sm font-bold hover:scale-105 transition-transform shadow-lg">
                 🚀 Start Exam
@@ -246,7 +246,7 @@ function renderResults() {
               <p class="text-sm text-gray-500 dark:text-gray-400">${percent}% (Grade: ${grade})</p>
             </div>
           ` : `
-            <span class="px-3 py-1 rounded-full text-xs font-medium bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400">
               Pending Grading
             </span>
           `}
@@ -324,3 +324,4 @@ function toast(msg, type = 'success') {
   container.appendChild(t);
   setTimeout(() => t.remove(), 4000);
 }
+

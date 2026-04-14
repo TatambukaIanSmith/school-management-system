@@ -17,18 +17,7 @@
             display: ['DM Serif Display', 'serif'],
           },
           colors: {
-            brand: {
-              50:  '#fff4f0',
-              100: '#ffe4d9',
-              200: '#ffc4ae',
-              300: '#ff9a7a',
-              400: '#ff6b42',
-              500: '#f04923',
-              600: '#de2d0c',
-              700: '#b8230a',
-              800: '#961f0e',
-              900: '#7c1e13',
-            }
+            brand: {50: '#f9fafb',100: '#f3f4f6',200: '#e5e7eb',300: '#d1d5db',400: '#9ca3af',500: '#000000',600: '#000000',700: '#000000',800: '#000000',900: '#000000'}
           },
         }
       }
@@ -36,9 +25,9 @@
   </script>
   <style>
     :root {
-      --brand: #f04923;
-      --brand-light: #ff6b42;
-      --brand-dark: #de2d0c;
+      --brand: #000000;
+      --brand-light: #1a1a1a;
+      --brand-dark: #000000;
     }
 
     * { box-sizing: border-box; }
@@ -60,37 +49,36 @@
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255,255,255,0.6);
-      box-shadow: 0 8px 40px rgba(240,73,35,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .dark .glass-card {
       background: rgba(30,22,18,0.72);
-      border: 1px solid rgba(255,107,66,0.12);
-      box-shadow: 0 8px 40px rgba(240,73,35,0.15), 0 2px 8px rgba(0,0,0,0.3);
+      border: 1px solid rgba(26,26,26,0.12);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .navbar-glass {
       background: rgba(255,255,255,0.82);
       backdrop-filter: blur(30px) saturate(200%);
       -webkit-backdrop-filter: blur(30px) saturate(200%);
-      border-bottom: 1px solid rgba(240,73,35,0.12);
+      border-bottom: 1px solid rgba(0,0,0,0.12);
     }
 
     .dark .navbar-glass {
       background: rgba(15,13,12,0.88);
-      border-bottom: 1px solid rgba(240,73,35,0.2);
+      border-bottom: 1px solid rgba(0,0,0,0.2);
     }
 
-    .btn-brand {
-      background: linear-gradient(135deg, #ff6b42 0%, #f04923 60%, #de2d0c 100%);
+    .btn-brand{background:#000000;
       color: white;
       transition: all 0.2s;
-      box-shadow: 0 4px 16px rgba(240,73,35,0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     }
 
     .btn-brand:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 24px rgba(240,73,35,0.45);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
     }
 
     .mesh-bg {
@@ -111,13 +99,13 @@
 
     .mesh-bg::before {
       width: 600px; height: 600px;
-      background: radial-gradient(circle, #ff6b42 0%, transparent 70%);
+      background: radial-gradient(circle, #1a1a1a 0%, transparent 70%);
       top: -100px; right: -100px;
     }
 
     .mesh-bg::after {
       width: 500px; height: 500px;
-      background: radial-gradient(circle, #de2d0c 0%, transparent 70%);
+      background: radial-gradient(circle, #000000 0%, transparent 70%);
       bottom: -100px; left: -100px;
     }
 
@@ -126,14 +114,14 @@
 
     .toggle-switch {
       width: 44px; height: 24px;
-      background: rgba(240,73,35,0.2);
+      background: rgba(0,0,0,0.2);
       border-radius: 99px;
       position: relative;
       cursor: pointer;
       transition: background 0.3s;
     }
 
-    .toggle-switch.active { background: #f04923; }
+    .toggle-switch.active { background: #000000; }
 
     .toggle-switch .knob {
       width: 18px; height: 18px;
@@ -209,14 +197,14 @@
 
   <div class="mb-8">
     <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-2">
-      My <span style="background: linear-gradient(135deg, #ff6b42, #de2d0c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Profile</span>
+      My <span style="background: linear-gradient(135deg, #1a1a1a, #000000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Profile</span>
     </h1>
     <p class="text-gray-500 dark:text-gray-400">View and manage your account information.</p>
   </div>
 
   <div class="glass-card rounded-3xl p-6 sm:p-8">
     <div class="flex items-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
-      <div class="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+      <div class="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #000000)">
         <span id="profile-initial">S</span>
       </div>
       <div class="flex-1">
@@ -317,7 +305,7 @@ function loadProfile() {
   const userInfo = document.getElementById('user-info');
   if (userInfo) {
     userInfo.innerHTML = `
-      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #ff6b42, #de2d0c)">
+      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #000000)">
         ${currentUser.fullName.charAt(0).toUpperCase()}
       </div>
       <div class="hidden sm:block">
@@ -411,3 +399,7 @@ function applyDark() {
 
 </body>
 </html>
+
+
+
+

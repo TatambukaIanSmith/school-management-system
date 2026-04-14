@@ -31,7 +31,7 @@ const TOURS = {
         position: 'top'
       },
       {
-        element: 'a[href="index.html"]',
+        element: 'a[href="students.html"]',
         title: 'Manage Students 👨‍🎓',
         message: 'Click here to view, add, edit, or delete student records.',
         position: 'bottom'
@@ -57,7 +57,7 @@ const TOURS = {
         position: 'bottom'
       },
       {
-        element: 'a[href="index.html"]',
+        element: 'a[href="students.html"]',
         title: 'Student Records 📋',
         message: 'Click here to register new students or manage existing records.',
         position: 'bottom'
@@ -77,7 +77,7 @@ const TOURS = {
         position: 'bottom'
       },
       {
-        element: 'a[href="index.html"]',
+        element: 'a[href="students.html"]',
         title: 'View Students 👨‍🎓',
         message: 'Access student records and update information as needed.',
         position: 'bottom'
@@ -91,7 +91,7 @@ const TOURS = {
         position: 'bottom'
       },
       {
-        element: 'a[href="index.html"]',
+        element: 'a[href="students.html"]',
         title: 'Student Directory 📖',
         message: 'Access student information and update records during counseling sessions.',
         position: 'bottom'
@@ -105,7 +105,7 @@ const TOURS = {
         position: 'bottom'
       },
       {
-        element: 'a[href="index.html"]',
+        element: 'a[href="students.html"]',
         title: 'View Students 👀',
         message: 'Click here to search and view student records.',
         position: 'bottom'
@@ -119,7 +119,7 @@ const TOURS = {
         position: 'bottom'
       },
       {
-        element: 'a[href="index.html"]',
+        element: 'a[href="students.html"]',
         title: 'Student Lookup 🔍',
         message: 'Search for students by ID or name to verify their identity.',
         position: 'bottom'
@@ -662,7 +662,7 @@ function addTooltipStyles() {
     }
     
     .tooltip-close:hover {
-      color: #f04923;
+      color: #000000;
     }
     
     .tooltip-message {
@@ -708,7 +708,7 @@ function addTooltipStyles() {
     }
     
     .dot.active {
-      background: #f04923;
+      background: #000000;
       transform: scale(1.2);
     }
     
@@ -734,7 +734,7 @@ function addTooltipStyles() {
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, #ff6b42, #f04923);
+      background: linear-gradient(135deg, #1a1a1a, #000000);
       color: white;
       box-shadow: 0 4px 12px rgba(240, 73, 35, 0.3);
     }
@@ -746,7 +746,7 @@ function addTooltipStyles() {
     
     .btn-secondary {
       background: rgba(240, 73, 35, 0.08);
-      color: #f04923;
+      color: #000000;
       border: 1px solid rgba(240, 73, 35, 0.2);
     }
     
@@ -762,3 +762,5 @@ function addTooltipStyles() {
 document.addEventListener('DOMContentLoaded', () => {
   addTooltipStyles();
 });
+
+

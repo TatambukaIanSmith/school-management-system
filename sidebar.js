@@ -121,7 +121,7 @@ function addSidebarStyles() {
 
     .sidebar-link.active {
       background: rgba(240,73,35,0.12);
-      color: #f04923 !important;
+      color: #000000 !important;
     }
 
     @media (max-width: 1023px) {
@@ -151,3 +151,4 @@ if (document.readyState === 'loading') {
   addSidebarStyles();
   loadSidebar();
 }
+

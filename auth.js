@@ -464,3 +464,4 @@ function showError(containerId, message) {
 document.addEventListener('DOMContentLoaded', () => {
   initDarkMode();
 });
+
