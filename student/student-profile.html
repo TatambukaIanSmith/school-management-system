@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exam Management - School Registration System</title>
+  <title>My Profile - School Registration System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
@@ -50,7 +50,6 @@
       -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(255,255,255,0.6);
       box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
-      transition: box-shadow 0.25s;
     }
 
     .dark .glass-card {
@@ -135,37 +134,11 @@
     }
 
     .toggle-switch.active .knob { transform: translateX(20px); }
-
-    .form-input {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1.5px solid rgba(0,0,0,0.1);
-      font-size: 15px;
-      background: rgba(255,255,255,0.8);
-      color: #1e1612;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .dark .form-input {
-      background: rgba(30,22,18,0.6);
-      border-color: rgba(26,26,26,0.2);
-      color: #f0ebe8;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.12);
-    }
   </style>
 </head>
 <body id="body-root">
 
 <div class="mesh-bg"></div>
-
-<!-- Toast Container -->
-<div id="toast-container" style="position: fixed; top: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
 
 <!-- Navbar -->
 <nav class="navbar-glass sticky top-0 z-40">
@@ -181,9 +154,9 @@
       </div>
 
       <div class="hidden md:flex items-center gap-2">
-        <a href="dashboard.html" class="px-4 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">Dashboard</a>
-        <a href="students.html" class="px-4 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">Students</a>
-        <a href="exams.html" class="px-4 py-2 rounded-xl text-sm font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20">Exams</a>
+        <a href="../app/dashboard.html" class="px-4 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">Dashboard</a>
+        <a href="student-exams.html" class="px-4 py-2 rounded-xl text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">My Exams</a>
+        <a href="student-profile.html" class="px-4 py-2 rounded-xl text-sm font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20">Profile</a>
       </div>
     </div>
 
@@ -205,7 +178,7 @@
 </nav>
 
 <!-- Main Content -->
-<main class="lg:ml-64 max-w-7xl mx-auto px-4 sm:px-6 py-8">
+<main class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
   <!-- Back/Forward Navigation -->
   <div class="flex items-center gap-2 mb-6">
     <button onclick="window.history.back()" title="Go Back" class="flex items-center gap-2 px-4 py-2 rounded-xl glass-card hover:border-brand-400 transition-all group">
@@ -224,123 +197,158 @@
 
   <div class="mb-8">
     <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-2">
-      Exam <span style="background: linear-gradient(135deg, #1a1a1a, #000000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Management</span>
+      My <span style="background: linear-gradient(135deg, #1a1a1a, #000000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Profile</span>
     </h1>
-    <p class="text-gray-500 dark:text-gray-400">Create, manage, and grade exams for your students.</p>
+    <p class="text-gray-500 dark:text-gray-400">View and manage your account information.</p>
   </div>
 
-  <!-- View Toggle -->
-  <div class="flex gap-4 mb-6">
-    <button onclick="showView('list')" id="btn-list" class="px-6 py-2 rounded-xl font-semibold text-sm btn-brand">
-      My Exams
-    </button>
-    <button onclick="showView('create')" id="btn-create" class="px-6 py-2 rounded-xl font-semibold text-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
-      Create New Exam
-    </button>
-    <button onclick="showView('submissions')" id="btn-submissions" class="px-6 py-2 rounded-xl font-semibold text-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
-      Submissions
-    </button>
-  </div>
-
-  <!-- Exam List View -->
-  <div id="view-list" class="glass-card rounded-3xl p-6 sm:p-8">
-    <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-6">My Exams</h2>
-    <div id="exams-list" class="space-y-4">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-
-  <!-- Create Exam View -->
-  <div id="view-create" class="hidden">
-    <div class="glass-card rounded-3xl p-6 sm:p-8 mb-6">
-      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-6">Create New Exam</h2>
-      
-      <form id="exam-form" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Exam Title *</label>
-            <input type="text" id="exam-title" placeholder="e.g. Mathematics Mid-Term" class="form-input" required />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
-            <input type="text" id="exam-subject" placeholder="e.g. Mathematics" class="form-input" required />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Class *</label>
-            <select id="exam-class" class="form-input" required>
-              <option value="">Select class</option>
-              <option>Senior 1</option>
-              <option>Senior 2</option>
-              <option>Senior 3</option>
-              <option>Senior 4</option>
-              <option>Senior 5</option>
-              <option>Senior 6</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Duration (minutes) *</label>
-            <input type="number" id="exam-duration" placeholder="60" class="form-input" required />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Total Marks *</label>
-            <input type="number" id="exam-marks" placeholder="100" class="form-input" required />
-          </div>
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Due Date *</label>
-            <input type="datetime-local" id="exam-due" class="form-input" required />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Instructions</label>
-          <textarea id="exam-instructions" rows="3" placeholder="Enter exam instructions..." class="form-input"></textarea>
-        </div>
-      </form>
+  <div class="glass-card rounded-3xl p-6 sm:p-8">
+    <div class="flex items-center gap-6 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700">
+      <div class="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #000000)">
+        <span id="profile-initial">S</span>
+      </div>
+      <div class="flex-1">
+        <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-1" id="profile-name">Student Name</h2>
+        <p class="text-gray-500 dark:text-gray-400" id="profile-email">student@school.com</p>
+        <span class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+          Student Account
+        </span>
+      </div>
     </div>
 
-    <!-- Questions Section -->
-    <div class="glass-card rounded-3xl p-6 sm:p-8">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="font-display text-xl text-gray-900 dark:text-white">Questions</h3>
-        <button onclick="addQuestion()" class="btn-brand px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+    <div class="space-y-6">
+      <div>
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Account Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Full Name</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white" id="info-name">-</p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Email Address</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white" id="info-email">-</p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Student ID</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white" id="info-id">-</p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Class</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white" id="info-class">-</p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Account Created</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white" id="info-created">-</p>
+          </div>
+          <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Role</p>
+            <p class="text-sm font-semibold text-gray-900 dark:text-white">Student</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button onclick="logout()" class="w-full sm:w-auto btn-brand px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
           </svg>
-          Add Question
-        </button>
-      </div>
-
-      <div id="questions-container" class="space-y-4">
-        <!-- Questions added dynamically -->
-      </div>
-
-      <div class="flex gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <button onclick="saveExam()" class="btn-brand px-6 py-3 rounded-xl font-semibold flex-1 sm:flex-none">
-          Save Exam
-        </button>
-        <button onclick="showView('list')" class="px-6 py-3 rounded-xl font-semibold border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-gray-700 dark:text-gray-300">
-          Cancel
+          <span>Logout</span>
         </button>
       </div>
     </div>
   </div>
-
-  <!-- Submissions View -->
-  <div id="view-submissions" class="hidden glass-card rounded-3xl p-6 sm:p-8">
-    <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-6">Student Submissions</h2>
-    <div id="submissions-list">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-
 </main>
 
-<script src="sidebar.js"></script>
-<script src="exams.js"></script>
+<script>
+const SESSION_KEY = 'srs_session';
+let currentUser = null;
+let darkMode = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuth();
+  initDarkMode();
+  loadProfile();
+});
+
+function checkAuth() {
+  try {
+    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY));
+  } catch {
+    currentUser = null;
+  }
+  
+  if (!currentUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  if (currentUser.role !== 'student') {
+    alert('Access denied. This page is for students only.');
+    window.location.href = 'dashboard.html';
+    return;
+  }
+}
+
+function loadProfile() {
+  if (!currentUser) return;
+  
+  document.getElementById('profile-initial').textContent = currentUser.fullName.charAt(0).toUpperCase();
+  document.getElementById('profile-name').textContent = currentUser.fullName;
+  document.getElementById('profile-email').textContent = currentUser.email;
+  
+  document.getElementById('info-name').textContent = currentUser.fullName;
+  document.getElementById('info-email').textContent = currentUser.email;
+  document.getElementById('info-id').textContent = currentUser.employeeId || 'Not set';
+  document.getElementById('info-class').textContent = currentUser.class || 'Not assigned';
+  document.getElementById('info-created').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : 'Unknown';
+  
+  const userInfo = document.getElementById('user-info');
+  if (userInfo) {
+    userInfo.innerHTML = `
+      <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #000000)">
+        ${currentUser.fullName.charAt(0).toUpperCase()}
+      </div>
+      <div class="hidden sm:block">
+        <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">${currentUser.fullName}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Student</p>
+      </div>
+    `;
+  }
+}
+
+function logout() {
+  localStorage.removeItem(SESSION_KEY);
+  window.location.href = 'login.html';
+}
+
+function initDarkMode() {
+  darkMode = localStorage.getItem('srs_dark') === 'true';
+  applyDark();
+}
+
+function toggleDark() {
+  darkMode = !darkMode;
+  localStorage.setItem('srs_dark', darkMode);
+  applyDark();
+}
+
+function applyDark() {
+  const root = document.getElementById('body-root');
+  const toggle = document.getElementById('dark-toggle');
+  if (darkMode) {
+    root.classList.add('dark');
+    document.documentElement.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
+    document.documentElement.classList.remove('dark');
+  }
+  if (toggle) toggle.classList.toggle('active', darkMode);
+}
+</script>
 
 <!-- Footer -->
-<footer class="lg:ml-64 mt-16 border-t border-gray-200 dark:border-gray-800">
-  <div class="px-4 sm:px-6 py-8">
+<footer class="mt-16 border-t border-gray-200 dark:border-gray-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
       <div>
         <div class="flex items-center gap-3 mb-3">
@@ -356,7 +364,7 @@
       <div>
         <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">Quick Links</h3>
         <ul class="space-y-2 text-sm">
-          <li><a href="dashboard.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Dashboard</a></li>
+          <li><a href="../app/dashboard.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Dashboard</a></li>
           <li><a href="students.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Students</a></li>
           <li><a href="exams.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Exams</a></li>
           <li><a href="users.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Users</a></li>
@@ -365,15 +373,15 @@
       <div>
         <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">Support</h3>
         <ul class="space-y-2 text-sm">
-          <li><a href="help-center.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Help Center</a></li>
-          <li><a href="documentation.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Documentation</a></li>
-          <li><a href="contact.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Contact Us</a></li>
-          <li><a href="privacy-policy.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Privacy Policy</a></li>
+          <li><a href="../pages/help-center.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Help Center</a></li>
+          <li><a href="../pages/documentation.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Documentation</a></li>
+          <li><a href="../pages/contact.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Contact Us</a></li>
+          <li><a href="../pages/privacy-policy.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Privacy Policy</a></li>
         </ul>
       </div>
     </div>
     <div class="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm text-gray-500 dark:text-gray-400">ï¿½ 2024 School Registration System. All rights reserved.</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">© 2024 School Registration System. All rights reserved.</p>
       <div class="flex items-center gap-4">
         <a href="#" class="text-gray-400 hover:text-brand-500 transition-colors">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>

@@ -1,49 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>First Time Login Guide - Help Center</title>
+  <title>help-dark-mode - Help Center</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['DM Sans', 'sans-serif'],
-            display: ['DM Serif Display', 'serif'],
-          },
-          colors: {
-            brand: {50: '#f9fafb',100: '#f3f4f6',200: '#e5e7eb',300: '#d1d5db',400: '#9ca3af',500: '#000000',600: '#000000',700: '#000000',800: '#000000',900: '#000000'}
-          },
+          fontFamily: { sans: ['DM Sans', 'sans-serif'], display: ['DM Serif Display', 'serif'] },
+          colors: { brand: {50: '#f9fafb',100: '#f3f4f6',200: '#e5e7eb',300: '#d1d5db',400: '#9ca3af',500: '#000000',600: '#000000',700: '#000000',800: '#000000',900: '#000000'} }
         }
       }
     }
   </script>
   <style>
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: #f7f3f0;
-    }
+    body { font-family: 'DM Sans', sans-serif; background: #f7f3f0; }
     .dark body { background: #0f0d0c; }
-    .glass-card {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-    .dark .glass-card {
-      background: rgba(15,13,12,0.85);
-      border: 1px solid rgba(0,0,0,0.2);
-    }
-    .btn-brand{background:#000000;
-    }
+    .glass-card { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(0,0,0,0.1); }
+    .dark .glass-card { background: rgba(15,13,12,0.85); border: 1px solid rgba(0,0,0,0.2); }
+    .btn-brand{background:#000000; }
   </style>
 </head>
 <body id="body-root" class="min-h-screen">
-
 <nav class="glass-card sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
     <a href="help-center.html" class="flex items-center gap-3">
@@ -54,67 +36,23 @@
       </div>
       <span class="font-display text-lg text-gray-900 dark:text-white">Help Center</span>
     </a>
-    <a href="help-center.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">← Back</a>
+    <a href="help-center.html" class="text-sm text-gray-600 dark:text-gray-400 hover:text-brand-500">? Back</a>
   </div>
 </nav>
-
 <main class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-  <div class="mb-8">
-    <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-4">
-      First Time <span style="background: linear-gradient(135deg, #1a1a1a, #000000); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Login Guide</span>
-    </h1>
-    <p class="text-gray-600 dark:text-gray-400 text-lg">Learn how to access your account and navigate the dashboard</p>
-  </div>
-
-  <div class="space-y-6">
-    <div class="glass-card rounded-2xl p-6">
-      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Logging In</h2>
-      <ol class="list-decimal list-inside text-gray-600 dark:text-gray-400 space-y-3">
-        <li>Go to the login page</li>
-        <li>Enter your email address</li>
-        <li>Enter your password</li>
-        <li>Click "Sign In"</li>
-      </ol>
-    </div>
-
-    <div class="glass-card rounded-2xl p-6">
-      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Understanding Your Dashboard</h2>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">
-        After logging in, you'll see your personalized dashboard with:
-      </p>
-      <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2">
-        <li><strong>Statistics:</strong> Quick overview of key numbers</li>
-        <li><strong>Quick Actions:</strong> Common tasks you can perform</li>
-        <li><strong>Navigation:</strong> Sidebar and navbar for easy access</li>
-        <li><strong>Profile Menu:</strong> Click your avatar to manage profiles</li>
-      </ul>
-    </div>
-
-    <div class="glass-card rounded-2xl p-6">
-      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Navigation Tips</h2>
-      <div class="space-y-3">
-        <div class="border-l-4 border-brand-500 pl-4">
-          <p class="font-semibold text-gray-900 dark:text-white">Use the Sidebar</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Access main sections like Dashboard, Students, Exams, and Users</p>
-        </div>
-        <div class="border-l-4 border-blue-500 pl-4">
-          <p class="font-semibold text-gray-900 dark:text-white">Back/Forward Buttons</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Use navigation buttons at the top of each page</p>
-        </div>
-        <div class="border-l-4 border-green-500 pl-4">
-          <p class="font-semibold text-gray-900 dark:text-white">Profile Dropdown</p>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Click your avatar to switch profiles or sign out</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="glass-card rounded-2xl p-6 text-center">
-      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-2">Need More Help?</h2>
-      <p class="text-gray-600 dark:text-gray-400 mb-6">Explore other help topics</p>
-      <a href="help-center.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90">
-        Back to Help Center
-      </a>
-    </div>
+  <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-8">
+    <span style="background: linear-gradient(135deg, #1a1a1a, #000000); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Help Topic</span>
+  </h1>
+  <div class="glass-card rounded-2xl p-8">
+    <p class="text-gray-600 dark:text-gray-400 mb-6">Detailed help content for this topic is coming soon. In the meantime, you can:</p>
+    <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-2 mb-6">
+      <li>Check the <a href="documentation.html" class="text-brand-500 hover:text-brand-600">Documentation</a> for detailed guides</li>
+      <li>Visit the <a href="help-center.html" class="text-brand-500 hover:text-brand-600">Help Center</a> for other topics</li>
+      <li><a href="contact.html" class="text-brand-500 hover:text-brand-600">Contact Support</a> for personalized assistance</li>
+    </ul>
+    <a href="help-center.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-brand text-white font-medium hover:opacity-90">
+      Back to Help Center
+    </a>
   </div>
 </main>
 
@@ -136,7 +74,7 @@
       <div>
         <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">Quick Links</h3>
         <ul class="space-y-2 text-sm">
-          <li><a href="dashboard.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Dashboard</a></li>
+          <li><a href="../app/dashboard.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Dashboard</a></li>
           <li><a href="students.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Students</a></li>
           <li><a href="exams.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Exams</a></li>
           <li><a href="users.html" class="text-gray-600 dark:text-gray-400 hover:text-brand-500 transition-colors">Users</a></li>
@@ -153,7 +91,7 @@
       </div>
     </div>
     <div class="pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-sm text-gray-500 dark:text-gray-400">© 2024 School Registration System. All rights reserved.</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">� 2024 School Registration System. All rights reserved.</p>
       <div class="flex items-center gap-4">
         <a href="#" class="text-gray-400 hover:text-brand-500 transition-colors">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -168,8 +106,7 @@
     </div>
   </div>
 </footer>
-
-<script src="auth.js"></script>
+<script src="../js/auth.js"></script>
 </body>
 </html>
 
