@@ -217,7 +217,7 @@ function handleSignup(e) {
   createSession(newUser);
   
   // Redirect to dashboard
-  window.location.href = 'dashboard.html';
+  window.location.href = '../app/dashboard.html';
 }
 
 function validateSignup() {
@@ -333,7 +333,7 @@ function handleLogin(e) {
   createSession(user);
   
   // Redirect to dashboard
-  window.location.href = 'dashboard.html';
+  window.location.href = '../app/dashboard.html';
 }
 
 function validateLogin() {
@@ -392,7 +392,7 @@ function clearSession() {
 function requireAuth() {
   const session = getSession();
   if (!session) {
-    window.location.href = 'login.html';
+    window.location.href = '../auth/login.html';
     return null;
   }
   return session;
@@ -400,7 +400,7 @@ function requireAuth() {
 
 function logout() {
   clearSession();
-  window.location.href = 'login.html';
+  window.location.href = '../auth/login.html';
 }
 
 function getUserPermissions(role) {
