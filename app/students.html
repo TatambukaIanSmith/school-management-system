@@ -517,11 +517,11 @@
         <h2 class="font-display text-2xl text-gray-900 dark:text-white" id="form-title">New Student</h2>
         <p class="form-label mt-0.5" id="form-subtitle">Fill in the details below</p>
       </div>
-      <div class="w-10 h-10 rounded-2xl btn-brand flex items-center justify-center">
-        <svg id="form-icon" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <button type="button" id="form-collapse-btn" onclick="toggleFormCollapse()" class="w-10 h-10 rounded-2xl btn-brand flex items-center justify-center transition-transform hover:scale-110 active:scale-95" style="cursor: pointer !important; z-index: 10000 !important; position: relative;" title="Collapse/Expand Form">
+        <svg id="form-icon" class="w-5 h-5 text-white transition-transform" style="pointer-events: none;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
-      </div>
+      </button>
     </div>
 
     <!-- Progress bar -->

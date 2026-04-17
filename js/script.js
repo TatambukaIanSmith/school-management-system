@@ -333,6 +333,31 @@ function setFormMode(mode) {
   }
 }
 
+// ── Toggle Form Collapse ───────────────────────────
+function toggleFormCollapse() {
+  const form = document.getElementById('student-form');
+  const progressBar = document.querySelector('.form-progress');
+  const icon = document.getElementById('form-icon');
+  
+  if (!form || !icon) return;
+  
+  const isCollapsed = form.style.display === 'none';
+  
+  if (isCollapsed) {
+    // Expand
+    form.style.display = 'grid';
+    if (progressBar) progressBar.style.display = 'block';
+    icon.style.transform = 'rotate(0deg)';
+    toast('Form expanded', 'info');
+  } else {
+    // Collapse
+    form.style.display = 'none';
+    if (progressBar) progressBar.style.display = 'none';
+    icon.style.transform = 'rotate(45deg)';
+    toast('Form collapsed - Click + to expand', 'info');
+  }
+}
+
 // ── Edit ───────────────────────────────────────────
 function editStudent(id) {
   if (!permissions.canEdit) {
