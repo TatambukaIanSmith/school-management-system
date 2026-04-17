@@ -47,10 +47,7 @@ function checkAuth() {
   }
 }
 
-function logout() {
-  localStorage.removeItem(SESSION_KEY);
-  window.location.href = 'login.html';
-}
+// logout function is in auth.js
 
 function updateUserInfo() {
   const userInfo = document.getElementById('user-info');

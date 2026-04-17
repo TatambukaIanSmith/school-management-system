@@ -7,8 +7,7 @@
 
 const PROFILES_KEY = 'srs_profiles';
 const ACTIVE_PROFILE_KEY = 'srs_active_profile';
-const SESSION_KEY = 'srs_session';
-const USERS_KEY = 'srs_users';
+// Don't redeclare - use window.SESSION_KEY and window.USERS_KEY directly
 
 // ── Profile Management ─────────────────────────────
 
@@ -42,7 +41,7 @@ function setActiveProfileId(profileId) {
 
 // Add current session as a profile
 function addCurrentProfile(nickname = null) {
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+  const session = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session') || '{}');
   
   if (!session.userId) {
     throw new Error('No active session to save');
@@ -146,7 +145,7 @@ function switchToProfile(profileId) {
   }
   
   // Save session
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  localStorage.setItem(window.SESSION_KEY || 'srs_session', JSON.stringify(session));
   
   // Update profile last used
   profile.lastUsed = new Date().toISOString();
@@ -173,7 +172,7 @@ function getCurrentProfile() {
 
 // Check if current session is saved as profile
 function isCurrentSessionSaved() {
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+  const session = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session') || '{}');
   if (!session.userId) return false;
   
   const profiles = getProfiles();
@@ -187,16 +186,17 @@ function renderProfileSwitcher() {
   const userInfo = document.getElementById('user-info');
   if (!userInfo) return;
   
-  const session = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+  const session = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session') || '{}');
   if (!session.userId) return;
   
   const currentProfile = getCurrentProfile();
   const profiles = getProfiles();
   const isSaved = isCurrentSessionSaved();
   
-  const avatar = currentProfile ? currentProfile.avatar : generateProfileAvatar(session.fullName);
-  const color = currentProfile ? currentProfile.color : generateProfileColor(session.role);
-  const displayName = currentProfile ? currentProfile.nickname : session.fullName;
+  // Always use session data for display, not cached profile data
+  const avatar = generateProfileAvatar(session.fullName);
+  const color = generateProfileColor(session.role);
+  const displayName = session.fullName; // Always use current session name
   
   userInfo.innerHTML = `
     <div class="relative profile-switcher-container">
@@ -242,7 +242,7 @@ function renderProfileSwitcher() {
           <div class="p-2 max-h-64 overflow-y-auto">
             <p class="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Saved Profiles</p>
             ${profiles.map(p => `
-              <div class="group flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${p.id === currentProfile?.id ? 'bg-brand-50 dark:bg-brand-900/20' : ''}">
+              <div class="group flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${p.userId === session.userId ? 'bg-brand-50 dark:bg-brand-900/20' : ''}">
                 <button onclick="switchToProfile('${p.id}')" class="flex items-center gap-3 flex-1 text-left">
                   <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: ${p.color}">
                     ${p.avatar}
@@ -251,7 +251,7 @@ function renderProfileSwitcher() {
                     <p class="font-medium text-gray-900 dark:text-white text-sm truncate">${p.nickname}</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400 truncate">${p.email}</p>
                   </div>
-                  ${p.id === currentProfile?.id ? `
+                  ${p.userId === session.userId ? `
                     <svg class="w-4 h-4 text-brand-500" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                     </svg>
@@ -311,7 +311,6 @@ function closeProfileMenuOnClickOutside(e) {
 // Update profile UI
 function updateProfileUI() {
   renderProfileSwitcher();
-}
 }
 
 // ── Helper Functions ───────────────────────────────
@@ -393,11 +392,12 @@ function initProfiles() {
   const userInfo = document.getElementById('user-info');
   if (userInfo) {
     // Check if we have a session
-    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+    const session = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session') || '{}');
     if (session.userId) {
       // Render immediately
       renderProfileSwitcher();
     }
   }
 }
+
 

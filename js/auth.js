@@ -7,6 +7,10 @@
 const USERS_KEY = 'srs_users';
 const SESSION_KEY = 'srs_session';
 
+// Expose to window for other scripts
+window.USERS_KEY = USERS_KEY;
+window.SESSION_KEY = SESSION_KEY;
+
 // Role-based permissions
 const PERMISSIONS = {
   administrator: {
@@ -91,6 +95,9 @@ const PERMISSIONS = {
     description: 'Take exams and view results'
   }
 };
+
+// Expose PERMISSIONS to window for other scripts
+window.PERMISSIONS = PERMISSIONS;
 
 // ── Dark Mode ──────────────────────────────────────
 let darkMode = false;
@@ -400,7 +407,10 @@ function requireAuth() {
 
 function logout() {
   clearSession();
-  window.location.href = '../auth/login.html';
+  // Use absolute path from root
+  const loginPath = window.location.origin + '/auth/login.html';
+  console.log('Logging out, redirecting to:', loginPath);
+  window.location.href = loginPath;
 }
 
 function getUserPermissions(role) {

@@ -78,7 +78,15 @@ function highlightActivePage() {
 // Load sidebar HTML
 async function loadSidebar() {
   try {
-    const response = await fetch('sidebar.html');
+    // Determine the correct path based on current location
+    const currentPath = window.location.pathname;
+    let sidebarPath = 'components/sidebar.html';
+    
+    if (currentPath.includes('/app/') || currentPath.includes('/student/') || currentPath.includes('/auth/') || currentPath.includes('/pages/')) {
+      sidebarPath = '../components/sidebar.html';
+    }
+    
+    const response = await fetch(sidebarPath);
     const html = await response.text();
     
     // Insert sidebar after navbar

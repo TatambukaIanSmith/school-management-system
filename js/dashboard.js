@@ -4,73 +4,30 @@
 
 'use strict';
 
+// Use existing constants from auth.js via window object
 const STORAGE_KEY = 'srs_students';
-const SESSION_KEY = 'srs_session';
-const USERS_KEY = 'srs_users';
+// Don't redeclare - use window.SESSION_KEY, window.USERS_KEY, window.PERMISSIONS directly
 
 let currentUser = null;
 let permissions = null;
 let students = [];
-let darkMode = false;
+// Don't redeclare darkMode - it's already declared in auth.js
 
-// Role-based permissions
-const PERMISSIONS = {
-  administrator: {
-    canView: true,
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-    canExport: true,
-    label: 'Administrator'
-  },
-  registrar: {
-    canView: true,
-    canCreate: true,
-    canEdit: true,
-    canDelete: true,
-    canExport: true,
-    label: 'Registrar'
-  },
-  teacher: {
-    canView: true,
-    canCreate: false,
-    canEdit: true,
-    canDelete: false,
-    canExport: true,
-    label: 'Teacher'
-  },
-  counselor: {
-    canView: true,
-    canCreate: false,
-    canEdit: true,
-    canDelete: false,
-    canExport: true,
-    label: 'Counselor'
-  },
-  staff: {
-    canView: true,
-    canCreate: false,
-    canEdit: false,
-    canDelete: false,
-    canExport: false,
-    label: 'Staff'
-  },
-  security: {
-    canView: true,
-    canCreate: false,
-    canEdit: false,
-    canDelete: false,
-    canExport: false,
-    label: 'Security'
-  }
-};
 
 // ── Init ───────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('Dashboard: DOMContentLoaded fired');
   checkAuth();
   loadData();
   initDarkMode();
-  renderDashboard();
+  
+  // Small delay to ensure data is loaded
+  setTimeout(() => {
+    console.log('Dashboard: Calling updateDashboardStats and renderDashboard');
+    updateDashboardStats();
+    renderDashboard();
+    updateWidgets(); // Update the new widgets
+  }, 100);
   
   // Start onboarding tour for new users
   if (currentUser && permissions) {
@@ -78,23 +35,123 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Update dashboard stats
+function updateDashboardStats() {
+  try {
+    console.log('Dashboard: updateDashboardStats called, students array:', students);
+    const stats = calculateStats();
+    console.log('Dashboard: Calculated stats:', stats);
+    
+    // Update stat cards
+    const statTotal = document.getElementById('stat-total');
+    const statMale = document.getElementById('stat-male');
+    const statFemale = document.getElementById('stat-female');
+    const statClasses = document.getElementById('stat-classes');
+    
+    if (statTotal) statTotal.textContent = stats.total;
+    if (statMale) statMale.textContent = stats.male;
+    if (statFemale) statFemale.textContent = stats.female;
+    if (statClasses) statClasses.textContent = stats.classes;
+    
+    console.log('Dashboard: Updated stat cards');
+    
+    // Update class distribution
+    updateClassDistribution(stats.classDistribution);
+    
+    // Update recent activity
+    updateRecentActivity();
+  } catch (error) {
+    console.error('Error updating dashboard stats:', error);
+  }
+}
+
+// Update class distribution display
+function updateClassDistribution(classDistribution) {
+  const container = document.getElementById('class-distribution');
+  if (!container) return;
+  
+  if (Object.keys(classDistribution).length === 0) {
+    container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No students registered yet.</p>';
+    return;
+  }
+  
+  const total = Object.values(classDistribution).reduce((sum, count) => sum + count, 0);
+  
+  container.innerHTML = Object.entries(classDistribution)
+    .sort((a, b) => b[1] - a[1])
+    .map(([className, count]) => {
+      const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+      return `
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${className}</span>
+          <div class="flex items-center gap-3">
+            <div class="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500" style="width: ${percentage}%"></div>
+            </div>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white w-12 text-right">${count}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+}
+
+// Update recent activity display
+function updateRecentActivity() {
+  const container = document.getElementById('recent-activity');
+  if (!container) return;
+  
+  const recentActivity = getRecentActivity();
+  
+  if (recentActivity.length === 0) {
+    container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-400">No recent activity.</p>';
+    return;
+  }
+  
+  container.innerHTML = recentActivity.slice(0, 5).map(activity => `
+    <div class="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+      <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+        <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-gray-900 dark:text-white">${activity.name}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">${activity.action} • ${activity.time}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
 // ── Authentication ─────────────────────────────────
 function checkAuth() {
   try {
-    currentUser = JSON.parse(localStorage.getItem(SESSION_KEY));
+    currentUser = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session'));
   } catch {
     currentUser = null;
   }
   
   if (!currentUser) {
-    window.location.href = 'login.html';
+    window.location.href = '../auth/login.html';
     return;
   }
   
-  permissions = PERMISSIONS[currentUser.role] || PERMISSIONS.staff;
+  permissions = window.PERMISSIONS[currentUser.role] || window.PERMISSIONS.staff;
   
   // Update UI
-  document.getElementById('user-name').textContent = currentUser.fullName.split(' ')[0];
+  const userName = document.getElementById('user-name');
+  if (userName) {
+    userName.textContent = currentUser.fullName.split(' ')[0] || 'User';
+  }
+  
+  const welcomeMessage = document.getElementById('welcome-message');
+  if (welcomeMessage) {
+    const hour = new Date().getHours();
+    let greeting = 'Good morning';
+    if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+    else if (hour >= 17) greeting = 'Good evening';
+    
+    welcomeMessage.textContent = `${greeting}! Here's what's happening with your school today.`;
+  }
   
   // Only call updateUserInfo if profiles.js hasn't already rendered the profile switcher
   // profiles.js will render after a 100ms delay, so this runs first as a fallback
@@ -115,10 +172,7 @@ function checkAuth() {
   }
 }
 
-function logout() {
-  localStorage.removeItem(SESSION_KEY);
-  window.location.href = 'login.html';
-}
+// logout function is in auth.js - no need to duplicate it here
 
 function updateUserInfo() {
   const userInfo = document.getElementById('user-info');
@@ -151,7 +205,9 @@ function updateUserInfo() {
 function loadData() {
   try {
     students = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch {
+    console.log('Dashboard: Loaded students from localStorage:', students.length, 'students');
+  } catch (error) {
+    console.error('Dashboard: Error loading students:', error);
     students = [];
   }
 }
@@ -169,16 +225,13 @@ function toggleDark() {
 }
 
 function applyDark() {
-  const root = document.getElementById('body-root');
-  const toggle = document.getElementById('dark-toggle');
   if (darkMode) {
-    root.classList.add('dark');
     document.documentElement.classList.add('dark');
+    document.body.classList.add('dark');
   } else {
-    root.classList.remove('dark');
     document.documentElement.classList.remove('dark');
+    document.body.classList.remove('dark');
   }
-  if (toggle) toggle.classList.toggle('active', darkMode);
 }
 
 // ── Dashboard Rendering ────────────────────────────
@@ -784,6 +837,207 @@ function exportFromDashboard() {
   
   alert(`Exported ${students.length} student records`);
 }
+
+// Alias for dashboard HTML button
+function exportStudents() {
+  exportFromDashboard();
+}
+
+// ── Widget Functions ───────────────────────────────
+function updateWidgets() {
+  updateSidebarNotifications();
+  updateSidebarSchedule();
+  updateSidebarPerformance();
+}
+
+function updateSidebarNotifications() {
+  const notifications = JSON.parse(localStorage.getItem('srs_notifications')) || [];
+  const unreadNotifications = notifications.filter(n => !n.read).slice(0, 3);
+  
+  const container = document.getElementById('sidebar-notifications');
+  const badge = document.getElementById('sidebar-notification-badge');
+  
+  if (badge) {
+    badge.textContent = unreadNotifications.length;
+    if (unreadNotifications.length > 0) {
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+  
+  if (!container) return;
+  
+  if (unreadNotifications.length === 0) {
+    container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No new notifications</p>';
+    return;
+  }
+  
+  container.innerHTML = unreadNotifications.map(notif => `
+    <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+      <p class="font-medium text-gray-900 dark:text-white line-clamp-1">${notif.title}</p>
+      <p class="text-gray-400 mt-0.5">${formatTimeAgo(notif.timestamp)}</p>
+    </div>
+  `).join('');
+}
+
+function updateSidebarSchedule() {
+  const container = document.getElementById('sidebar-schedule');
+  if (!container) return;
+  
+  const role = currentUser?.role;
+  
+  if (role === 'student') {
+    // Show upcoming exams for students
+    const exams = JSON.parse(localStorage.getItem('srs_exams')) || [];
+    const studentClass = currentUser.class;
+    const upcomingExams = exams
+      .filter(e => e.class === studentClass && new Date(e.dueDate) > new Date())
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+      .slice(0, 3);
+    
+    if (upcomingExams.length === 0) {
+      container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No upcoming exams</p>';
+      return;
+    }
+    
+    container.innerHTML = upcomingExams.map(exam => {
+      const dueDate = new Date(exam.dueDate);
+      const daysUntil = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+      
+      return `
+        <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2">
+            <p class="font-medium text-gray-900 dark:text-white line-clamp-1 flex-1">${exam.title}</p>
+            <span class="text-xs px-1.5 py-0.5 rounded-full flex-shrink-0 ${daysUntil <= 2 ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' : 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'}">
+              ${daysUntil}d
+            </span>
+          </div>
+          <p class="text-gray-400 mt-0.5">${exam.subject}</p>
+        </div>
+      `;
+    }).join('');
+    
+  } else if (['teacher', 'counselor', 'administrator'].includes(role)) {
+    // Show upcoming exams for teachers/admins
+    const exams = JSON.parse(localStorage.getItem('srs_exams')) || [];
+    const upcomingExams = exams
+      .filter(e => new Date(e.dueDate) > new Date())
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+      .slice(0, 3);
+    
+    if (upcomingExams.length === 0) {
+      container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No upcoming exams</p>';
+      return;
+    }
+    
+    container.innerHTML = upcomingExams.map(exam => {
+      const dueDate = new Date(exam.dueDate);
+      const daysUntil = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+      
+      return `
+        <div class="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+          <div class="flex items-start justify-between gap-2">
+            <p class="font-medium text-gray-900 dark:text-white line-clamp-1 flex-1">${exam.title}</p>
+            <span class="text-xs px-1.5 py-0.5 rounded-full flex-shrink-0 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+              ${daysUntil}d
+            </span>
+          </div>
+          <p class="text-gray-400 mt-0.5">${exam.class}</p>
+        </div>
+      `;
+    }).join('');
+    
+  } else {
+    container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No upcoming events</p>';
+  }
+}
+
+function updateSidebarPerformance() {
+  const container = document.getElementById('sidebar-performance');
+  if (!container) return;
+  
+  const role = currentUser?.role;
+  
+  if (role === 'student') {
+    // Show student's grade performance
+    const submissions = JSON.parse(localStorage.getItem('srs_submissions')) || [];
+    const mySubmissions = submissions.filter(s => s.studentId === currentUser.userId && s.graded);
+    
+    if (mySubmissions.length === 0) {
+      container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">No graded exams yet</p>';
+      return;
+    }
+    
+    const exams = JSON.parse(localStorage.getItem('srs_exams')) || [];
+    const totalScore = mySubmissions.reduce((sum, s) => sum + s.score, 0);
+    const totalPossible = mySubmissions.reduce((sum, s) => {
+      const exam = exams.find(e => e.id === s.examId);
+      return sum + (exam ? exam.totalMarks : 0);
+    }, 0);
+    const averagePercent = totalPossible > 0 ? Math.round((totalScore / totalPossible) * 100) : 0;
+    
+    container.innerHTML = `
+      <div class="space-y-2">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-gray-600 dark:text-gray-400">Average</span>
+            <span class="text-lg font-bold text-gray-900 dark:text-white">${averagePercent}%</span>
+          </div>
+          <div class="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-blue-500 to-indigo-500" style="width: ${averagePercent}%"></div>
+          </div>
+        </div>
+        <div class="text-gray-500 dark:text-gray-400">
+          ${mySubmissions.length} exam${mySubmissions.length !== 1 ? 's' : ''} graded
+        </div>
+      </div>
+    `;
+    
+  } else if (['teacher', 'counselor', 'administrator'].includes(role)) {
+    // Show system/class performance stats
+    const stats = calculateStats();
+    const submissions = JSON.parse(localStorage.getItem('srs_submissions')) || [];
+    const pendingGrading = submissions.filter(s => !s.graded).length;
+    
+    container.innerHTML = `
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 dark:text-gray-400">Students</span>
+          <span class="font-bold text-gray-900 dark:text-white">${stats.total}</span>
+        </div>
+        ${['teacher', 'administrator'].includes(role) ? `
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 dark:text-gray-400">Pending</span>
+          <span class="font-bold text-orange-600 dark:text-orange-400">${pendingGrading}</span>
+        </div>
+        ` : ''}
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 dark:text-gray-400">Classes</span>
+          <span class="font-bold text-gray-900 dark:text-white">${stats.classes}</span>
+        </div>
+      </div>
+    `;
+    
+  } else {
+    // For other roles (registrar, staff, security)
+    const stats = calculateStats();
+    
+    container.innerHTML = `
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 dark:text-gray-400">Students</span>
+          <span class="font-bold text-gray-900 dark:text-white">${stats.total}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 dark:text-gray-400">Classes</span>
+          <span class="font-bold text-gray-900 dark:text-white">${stats.classes}</span>
+        </div>
+      </div>
+    `;
+  }
+}
+
 
 
 

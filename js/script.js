@@ -105,10 +105,7 @@ function checkAuth() {
   permissions = PERMISSIONS[currentUser.role] || PERMISSIONS.staff;
 }
 
-function logout() {
-  localStorage.removeItem(SESSION_KEY);
-  window.location.href = 'login.html';
-}
+// logout function is in auth.js - no need to duplicate it here
 
 // ── Storage ────────────────────────────────────────
 function loadFromStorage() {
