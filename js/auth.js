@@ -1,11 +1,46 @@
 /* ===================================================
    Authentication System — auth.js
    =================================================== */
+//
 
 'use strict';
 
 const USERS_KEY = 'srs_users';
 const SESSION_KEY = 'srs_session';
+
+// ── Role Selection ─────────────────────────────────
+let selectedRole = null;
+
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('role').value = role;
+  
+  // Update UI
+  document.querySelectorAll('.role-badge').forEach(badge => {
+    badge.classList.remove('selected');
+  });
+  event.currentTarget.classList.add('selected');
+  
+  // Hide error
+  document.getElementById('err-role')?.classList.add('hidden');
+  
+  // Show/hide class selection for students
+  const classSelection = document.getElementById('class-selection');
+  if (classSelection) {
+    if (role === 'student') {
+      classSelection.classList.remove('hidden');
+      document.getElementById('student-class').required = true;
+    } else {
+      classSelection.classList.add('hidden');
+      document.getElementById('student-class').required = false;
+      document.getElementById('student-class').value = '';
+    }
+  }
+}
+
+// Expose functions to window immediately for HTML onclick handlers
+window.selectRole = selectRole;
+console.log('✅ selectRole function exposed to window');
 
 // Expose to window for other scripts
 window.USERS_KEY = USERS_KEY;
@@ -133,36 +168,6 @@ function togglePassword(fieldId) {
   
   const type = field.type === 'password' ? 'text' : 'password';
   field.type = type;
-}
-
-// ── Role Selection ─────────────────────────────────
-let selectedRole = null;
-
-function selectRole(role) {
-  selectedRole = role;
-  document.getElementById('role').value = role;
-  
-  // Update UI
-  document.querySelectorAll('.role-badge').forEach(badge => {
-    badge.classList.remove('selected');
-  });
-  event.currentTarget.classList.add('selected');
-  
-  // Hide error
-  document.getElementById('err-role')?.classList.add('hidden');
-  
-  // Show/hide class selection for students
-  const classSelection = document.getElementById('class-selection');
-  if (classSelection) {
-    if (role === 'student') {
-      classSelection.classList.remove('hidden');
-      document.getElementById('student-class').required = true;
-    } else {
-      classSelection.classList.add('hidden');
-      document.getElementById('student-class').required = false;
-      document.getElementById('student-class').value = '';
-    }
-  }
 }
 
 // ── Signup Form ────────────────────────────────────
@@ -340,14 +345,6 @@ async function handleLogin(e) {
   // Success - redirect to dashboard
   window.location.href = '../app/dashboard.html';
 }
-      showError('login-error', 'Incorrect password');
-      return;
-    }
-    
-    createSession(user);
-    window.location.href = '../app/dashboard.html';
-  }
-}
 
 function validateLogin() {
   let valid = true;
@@ -507,4 +504,6 @@ function showError(containerId, message) {
 document.addEventListener('DOMContentLoaded', () => {
   initDarkMode();
 });
+
+
 

@@ -481,6 +481,37 @@
 <script src="../js/auth.js"></script>
 
 <script>
+// Define selectRole function inline to ensure it's available
+let selectedRole = null;
+
+function selectRole(role) {
+  selectedRole = role;
+  document.getElementById('role').value = role;
+  
+  // Update UI
+  document.querySelectorAll('.role-badge').forEach(badge => {
+    badge.classList.remove('selected');
+  });
+  event.currentTarget.classList.add('selected');
+  
+  // Hide error
+  const errRole = document.getElementById('err-role');
+  if (errRole) errRole.classList.add('hidden');
+  
+  // Show/hide class selection for students
+  const classSelection = document.getElementById('class-selection');
+  if (classSelection) {
+    if (role === 'student') {
+      classSelection.classList.remove('hidden');
+      document.getElementById('student-class').required = true;
+    } else {
+      classSelection.classList.add('hidden');
+      document.getElementById('student-class').required = false;
+      document.getElementById('student-class').value = '';
+    }
+  }
+}
+
 // School Registration Enhancement
 (function() {
   // Get school ID from URL parameter
