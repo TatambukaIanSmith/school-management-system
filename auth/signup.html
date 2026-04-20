@@ -482,10 +482,10 @@
 
 <script>
 // Define selectRole function inline to ensure it's available
-let selectedRole = null;
+// Note: selectedRole is declared in auth.js, so we don't redeclare it here
 
 function selectRole(role) {
-  selectedRole = role;
+  window.selectedRole = role;
   document.getElementById('role').value = role;
   
   // Update UI

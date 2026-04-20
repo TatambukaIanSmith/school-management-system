@@ -185,15 +185,20 @@ async function supabaseSignIn(email, password) {
 }
 
 // Sign up with email and password
-async function supabaseSignUp(email, password, fullName, role = 'staff') {
+async function supabaseSignUp(email, password, userData) {
   try {
+    const { fullName, employeeId, role = 'staff', class: studentClass } = userData;
+    
     // Create user account with email confirmation
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
       password: password,
       options: {
         data: {
-          full_name: fullName
+          full_name: fullName,
+          employee_id: employeeId,
+          role: role,
+          class: studentClass
         },
         emailRedirectTo: window.location.origin + '/app/dashboard.html'
       }
@@ -207,14 +212,16 @@ async function supabaseSignUp(email, password, fullName, role = 'staff') {
         id: data.user.id,
         email: email,
         full_name: fullName,
+        employee_id: employeeId,
         role: role,
+        class: studentClass,
         is_active: true,
         created_at: new Date().toISOString(),
         last_login: new Date().toISOString()
       }]);
     }
     
-    console.log('Sign up successful:', data.user.email);
+    console.log('Sign up successful:', data.user.email, 'Role:', role);
     
     // Check if email confirmation is required
     if (data.user && !data.session) {
