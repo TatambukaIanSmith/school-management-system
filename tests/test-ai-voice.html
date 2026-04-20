@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Voice Assistant Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .status-box {
+      background: #f3f4f6;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .log-entry {
+      margin-bottom: 8px;
+      padding: 8px;
+      background: white;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+    }
+    .example-cmd {
+      background: #ede9fe;
+      border: 1px solid #c4b5fd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 4px;
+      display: inline-block;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .example-cmd:hover {
+      background: #ddd6fe;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 8px; color: #1f2937;">
+      🎤 AI Voice Assistant
+    </h1>
+    <p style="color: #6b7280; margin-bottom: 24px;">
+      Test the intelligent voice command system
+    </p>
+
+    <!-- API Key Setup -->
+    <div style="margin-bottom: 24px;">
+      <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">
+        OpenAI API Key
+      </label>
+      <div style="display: flex; gap: 8px;">
+        <input 
+          type="password" 
+          id="api-key-input" 
+          placeholder="sk-..." 
+          style="flex: 1; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px;"
+        />
+        <button 
+          onclick="setApiKey()" 
+          style="background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;"
+        >
+          Set Key
+        </button>
+      </div>
+      <p style="font-size: 12px; color: #9ca3af; margin-top: 4px;">
+        Get your key from <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #667eea;">OpenAI Platform</a>
+      </p>
+    </div>
+
+    <!-- Status -->
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div id="status-indicator" style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444;"></div>
+        <span id="status-text" style="font-weight: 600; color: #374151;">Not configured</span>
+      </div>
+    </div>
+
+    <!-- Example Commands -->
+    <div style="margin-bottom: 24px;">
+      <h3 style="font-weight: 700; margin-bottom: 12px; color: #374151;">
+        Try these commands:
+      </h3>
+      <div>
+        <span class="example-cmd">"Go to dashboard"</span>
+        <span class="example-cmd">"Add student John in S3"</span>
+        <span class="example-cmd">"Search for Sarah"</span>
+        <span class="example-cmd">"Dark mode"</span>
+        <span class="example-cmd">"Log out"</span>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+      <h4 style="font-weight: 700; margin-bottom: 8px; color: #92400e;">
+        📋 How to use:
+      </h4>
+      <ol style="margin-left: 20px; color: #78350f; font-size: 14px; line-height: 1.6;">
+        <li>Enter your OpenAI API key above</li>
+        <li>Click the microphone button (bottom right)</li>
+        <li>Grant microphone permission</li>
+        <li>Speak a command naturally</li>
+        <li>Watch the AI interpret and execute!</li>
+      </ol>
+    </div>
+
+    <!-- Log -->
+    <div>
+      <h3 style="font-weight: 700; margin-bottom: 12px; color: #374151;">
+        Activity Log:
+      </h3>
+      <div id="log-container" class="status-box">
+        <div class="log-entry">
+          <span style="color: #9ca3af;">Waiting for API key...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load AI Voice Assistant -->
+  <script src="../js/voice-commands-ai.js"></script>
+
+  <script>
+    // Logging system
+    function addLog(message, type = 'info') {
+      const logContainer = document.getElementById('log-container');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      
+      const timestamp = new Date().toLocaleTimeString();
+      const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'ai' ? '🧠' : 'ℹ️';
+      
+      entry.innerHTML = `
+        <span style="color: #9ca3af; font-size: 11px;">${timestamp}</span><br>
+        <span>${icon} ${message}</span>
+      `;
+      
+      logContainer.insertBefore(entry, logContainer.firstChild);
+      
+      // Keep only last 10 entries
+      while (logContainer.children.length > 10) {
+        logContainer.removeChild(logContainer.lastChild);
+      }
+    }
+
+    // Set API key
+    function setApiKey() {
+      const input = document.getElementById('api-key-input');
+      const key = input.value.trim();
+      
+      if (!key) {
+        alert('Please enter an API key');
+        return;
+      }
+      
+      if (!key.startsWith('sk-')) {
+        alert('Invalid API key format. Should start with "sk-"');
+        return;
+      }
+      
+      // Wait for voice assistant to be ready
+      const checkAndSet = () => {
+        if (window.voiceAssistant) {
+          window.voiceAssistant.setApiKey(key);
+          
+          // Update UI
+          document.getElementById('status-indicator').style.background = '#10b981';
+          document.getElementById('status-text').textContent = 'Ready to use';
+          
+          addLog('API key configured successfully', 'success');
+          addLog('Click the microphone button to start', 'info');
+          
+          // Hide key
+          input.type = 'password';
+        } else {
+          setTimeout(checkAndSet, 100);
+        }
+      };
+      
+      checkAndSet();
+    }
+
+    // Override console.log to capture AI logs
+    const originalLog = console.log;
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      
+      const message = args.join(' ');
+      if (message.includes('🎤 Voice input:')) {
+        addLog(message.replace('🎤 Voice input:', 'You said:'), 'info');
+      } else if (message.includes('🧠 AI interpreted:')) {
+        const cmd = args[1];
+        addLog(`AI understood: ${cmd.action}`, 'ai');
+      }
+    };
+
+    // Initial log
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        addLog('AI Voice Assistant loaded', 'success');
+        addLog('Enter your OpenAI API key to begin', 'info');
+      }, 500);
+    });
+
+    // Auto-fill API key from localStorage (for testing)
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedKey = localStorage.getItem('openai_api_key');
+      if (savedKey) {
+        document.getElementById('api-key-input').value = savedKey;
+      }
+    });
+
+    // Save API key to localStorage when set
+    const originalSetApiKey = setApiKey;
+    setApiKey = function() {
+      const key = document.getElementById('api-key-input').value.trim();
+      if (key) {
+        localStorage.setItem('openai_api_key', key);
+      }
+      originalSetApiKey();
+    };
+  </script>
+</body>
+</html>

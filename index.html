@@ -660,7 +660,7 @@ function toggleTheme() {
   if (html.classList.contains('dark')) {
     html.classList.remove('dark');
     if (body) body.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
+    localStorage.setItem('srs_dark', 'false'); // Use same key as rest of app
     // Show moon icon (for switching to dark)
     if (sunIcon) sunIcon.classList.add('hidden');
     if (moonIcon) moonIcon.classList.remove('hidden');
@@ -672,7 +672,7 @@ function toggleTheme() {
   } else {
     html.classList.add('dark');
     if (body) body.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
+    localStorage.setItem('srs_dark', 'true'); // Use same key as rest of app
     // Show sun icon (for switching to light)
     if (sunIcon) sunIcon.classList.remove('hidden');
     if (moonIcon) moonIcon.classList.add('hidden');
@@ -686,7 +686,7 @@ function toggleTheme() {
 
 // Initialize theme on page load
 (function() {
-  const savedTheme = localStorage.getItem('theme');
+  const savedTheme = localStorage.getItem('srs_dark'); // Use same key as rest of app
   const html = document.getElementById('html-root');
   const body = document.getElementById('body-root');
   const sunIcon = document.getElementById('theme-icon-sun');
@@ -695,7 +695,7 @@ function toggleTheme() {
   const moonIconMobile = document.getElementById('theme-icon-moon-mobile');
   
   // Default to dark theme (as the page is designed for dark)
-  if (savedTheme === 'light') {
+  if (savedTheme === 'false') { // Check for 'false' string
     html.classList.remove('dark');
     if (body) body.classList.remove('dark');
     if (sunIcon) sunIcon.classList.add('hidden');
@@ -716,7 +716,7 @@ function toggleTheme() {
 
 
 </script>
-<script src="js/voice-commands.js"></script>
+<script src="js/voice-commands-ai.js"></script>
 </body>
 </html>
 
