@@ -13,11 +13,10 @@ let filteredUsers = [];
 let darkMode = false;
 
 // ── Init ───────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   checkAuth();
-  loadUsers();
+  await loadUsers(); // Wait for users to load
   initDarkMode();
-  renderUsers();
   updateUserInfo();
   
   // Start onboarding tour for administrators
@@ -70,13 +69,49 @@ function updateUserInfo() {
 }
 
 // ── Load Users ─────────────────────────────────────
-function loadUsers() {
+async function loadUsers() {
+  // First load from localStorage
   try {
     allUsers = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
   } catch {
     allUsers = [];
   }
+  
+  // Then try to load from Supabase
+  if (window.supabaseClient) {
+    try {
+      const { data, error } = await window.supabaseClient
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.warn('⚠️ Could not load users from Supabase:', error.message);
+      } else if (data && data.length > 0) {
+        console.log('✅ Loaded', data.length, 'users from Supabase');
+        
+        // Convert Supabase format to local format
+        allUsers = data.map(u => ({
+          id: u.id,
+          email: u.email,
+          fullName: u.full_name,
+          role: u.role,
+          employeeId: u.employee_id || u.id.substring(0, 8),
+          isActive: u.is_active !== false,
+          createdAt: u.created_at,
+          class: u.class
+        }));
+        
+        // Save to localStorage for offline access
+        localStorage.setItem(USERS_KEY, JSON.stringify(allUsers));
+      }
+    } catch (error) {
+      console.error('Error loading users from Supabase:', error);
+    }
+  }
+  
   filteredUsers = [...allUsers];
+  renderUsers();
 }
 
 // ── Search Users ───────────────────────────────────
@@ -201,7 +236,7 @@ function closeEditModal() {
 }
 
 // ── Save User Changes ──────────────────────────────
-document.getElementById('edit-form').addEventListener('submit', (e) => {
+document.getElementById('edit-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   
   const userId = document.getElementById('edit-user-id').value;
@@ -211,16 +246,43 @@ document.getElementById('edit-form').addEventListener('submit', (e) => {
   const userIndex = allUsers.findIndex(u => u.id === userId);
   if (userIndex === -1) return;
   
+  // Update local data
   allUsers[userIndex].role = newRole;
   allUsers[userIndex].isActive = newStatus;
   
+  // Save to localStorage
   localStorage.setItem(USERS_KEY, JSON.stringify(allUsers));
+  
+  // Save to Supabase if available
+  if (window.supabaseClient) {
+    try {
+      const { error } = await window.supabaseClient
+        .from('users')
+        .update({
+          role: newRole,
+          is_active: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', userId);
+      
+      if (error) {
+        console.warn('⚠️ Could not update user in Supabase (RLS policy):', error.message);
+        toast('User updated locally (Supabase sync failed)', 'success');
+      } else {
+        console.log('✅ User updated in Supabase');
+        toast('User updated successfully', 'success');
+      }
+    } catch (error) {
+      console.error('Error updating user in Supabase:', error);
+      toast('User updated locally only', 'success');
+    }
+  } else {
+    toast('User updated successfully', 'success');
+  }
   
   loadUsers();
   searchUsers();
   closeEditModal();
-  
-  toast('User updated successfully', 'success');
 });
 
 // ── Dark Mode ──────────────────────────────────────

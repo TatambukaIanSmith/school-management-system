@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supabase Sync Checker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-6">Supabase Sync Checker</h1>
+    
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">LocalStorage Users</h2>
+      <div id="localStorage-users" class="space-y-2"></div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Supabase Auth Users</h2>
+      <button onclick="checkSupabaseAuth()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">
+        Check Supabase Auth
+      </button>
+      <div id="supabase-auth-users" class="space-y-2"></div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Supabase Users Table</h2>
+      <button onclick="checkSupabaseTable()" class="bg-green-500 text-white px-4 py-2 rounded mb-4">
+        Check Users Table
+      </button>
+      <div id="supabase-table-users" class="space-y-2"></div>
+    </div>
+
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mt-6">
+      <h3 class="font-semibold mb-2">Migration Tool</h3>
+      <p class="text-sm text-gray-600 mb-4">Migrate all localStorage users to Supabase</p>
+      <button onclick="migrateUsers()" class="bg-yellow-500 text-white px-4 py-2 rounded">
+        Migrate All Users
+      </button>
+      <div id="migration-status" class="mt-4"></div>
+    </div>
+  </div>
+
+  <script src="../js/supabase.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  
+  <script>
+    const USERS_KEY = 'srs_users';
+
+    // Check localStorage users
+    function checkLocalStorage() {
+      const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+      const container = document.getElementById('localStorage-users');
+      
+      if (users.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">No users in localStorage</p>';
+        return;
+      }
+
+      container.innerHTML = users.map(user => `
+        <div class="p-3 bg-gray-50 rounded">
+          <p class="font-semibold">${user.fullName}</p>
+          <p class="text-sm text-gray-600">${user.email} - ${user.role}</p>
+          <p class="text-xs text-gray-400">ID: ${user.userId}</p>
+        </div>
+      `).join('');
+    }
+
+    // Check Supabase Auth
+    async function checkSupabaseAuth() {
+      const container = document.getElementById('supabase-auth-users');
+      container.innerHTML = '<p class="text-gray-500">Loading...</p>';
+
+      try {
+        // Note: admin.listUsers() requires service role key
+        // For client-side, we can only check current session
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        
+        if (session) {
+          container.innerHTML = `
+            <div class="p-3 bg-green-50 rounded">
+              <p class="font-semibold">Current Session</p>
+              <p class="text-sm text-gray-600">${session.user.email}</p>
+              <p class="text-xs text-gray-400">ID: ${session.user.id}</p>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Note: Can only see current logged-in user from client-side. Check Supabase Dashboard for all users.</p>
+          `;
+        } else {
+          container.innerHTML = '<p class="text-gray-500">No active session. Please login first.</p>';
+        }
+      } catch (error) {
+        container.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+      }
+    }
+
+    // Check Supabase users table
+    async function checkSupabaseTable() {
+      const container = document.getElementById('supabase-table-users');
+      container.innerHTML = '<p class="text-gray-500">Loading...</p>';
+
+      try {
+        const { data, error } = await window.supabaseClient
+          .from('users')
+          .select('*');
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p class="text-gray-500">No users in Supabase table</p>';
+          return;
+        }
+
+        container.innerHTML = data.map(user => `
+          <div class="p-3 bg-blue-50 rounded">
+            <p class="font-semibold">${user.full_name || user.fullName || 'N/A'}</p>
+            <p class="text-sm text-gray-600">${user.email} - ${user.role}</p>
+            <p class="text-xs text-gray-400">ID: ${user.id || user.user_id}</p>
+          </div>
+        `).join('');
+      } catch (error) {
+        container.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+      }
+    }
+
+    // Migrate users
+    async function migrateUsers() {
+      const statusDiv = document.getElementById('migration-status');
+      statusDiv.innerHTML = '<p class="text-blue-500">Starting migration...</p>';
+
+      const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+      
+      if (users.length === 0) {
+        statusDiv.innerHTML = '<p class="text-yellow-500">No users to migrate</p>';
+        return;
+      }
+
+      let success = 0;
+      let failed = 0;
+      const results = [];
+
+      for (const user of users) {
+        try {
+          // Create auth user
+          const { data: authData, error: authError } = await window.supabaseClient.auth.signUp({
+            email: user.email,
+            password: user.password || 'ChangeMe123!', // Default password if not available
+            options: {
+              data: {
+                full_name: user.fullName,
+                role: user.role
+              }
+            }
+          });
+
+          if (authError) {
+            if (authError.message.includes('already registered')) {
+              results.push(`✓ ${user.email} - Already exists`);
+              success++;
+            } else {
+              throw authError;
+            }
+          } else {
+            results.push(`✓ ${user.email} - Created successfully`);
+            success++;
+          }
+        } catch (error) {
+          results.push(`✗ ${user.email} - ${error.message}`);
+          failed++;
+        }
+      }
+
+      statusDiv.innerHTML = `
+        <div class="space-y-2">
+          <p class="font-semibold">Migration Complete</p>
+          <p class="text-sm">Success: ${success} | Failed: ${failed}</p>
+          <div class="text-xs space-y-1 mt-2">
+            ${results.map(r => `<p>${r}</p>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Run on load
+    checkLocalStorage();
+  </script>
+</body>
+</html>

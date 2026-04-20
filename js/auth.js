@@ -170,7 +170,7 @@ if (document.getElementById('signup-form')) {
   document.getElementById('signup-form').addEventListener('submit', handleSignup);
 }
 
-function handleSignup(e) {
+async function handleSignup(e) {
   e.preventDefault();
   
   if (!validateSignup()) return;
@@ -182,45 +182,41 @@ function handleSignup(e) {
   const password = document.getElementById('password').value;
   const studentClass = role === 'student' ? document.getElementById('student-class').value : null;
   
-  // Get existing users
-  let users = [];
-  try {
-    users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-  } catch { users = []; }
-  
-  // Check if email already exists
-  if (users.some(u => u.email === email)) {
-    showError('signup-error', 'This email is already registered');
+  // Check if Supabase is available
+  if (typeof supabaseSignUp !== 'function') {
+    showError('signup-error', 'Database connection not available. Please try again later.');
     return;
   }
   
-  // Check if employee ID already exists
-  if (users.some(u => u.employeeId === employeeId)) {
-    showError('signup-error', 'This employee ID is already registered');
+  // Create user in Supabase
+  const result = await supabaseSignUp(email, password, {
+    fullName,
+    employeeId,
+    role,
+    class: studentClass
+  });
+  
+  if (!result.success) {
+    showError('signup-error', result.error || 'Signup failed. Please try again.');
     return;
   }
   
-  // Create new user
+  // Create session
   const newUser = {
-    id: uuid(),
+    id: result.user.id,
+    userId: result.user.id,
     fullName,
     email,
     employeeId,
     role,
-    password: hashPassword(password),
     createdAt: new Date().toISOString(),
     isActive: true
   };
   
-  // Add class for students
   if (role === 'student' && studentClass) {
     newUser.class = studentClass;
   }
   
-  users.push(newUser);
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  
-  // Auto login
   createSession(newUser);
   
   // Redirect to dashboard
@@ -328,36 +324,22 @@ async function handleLogin(e) {
   const password = document.getElementById('password').value;
   
   // Check if Supabase is available
-  if (typeof supabaseSignIn === 'function') {
-    // Use Supabase authentication
-    const result = await supabaseSignIn(email, password);
-    
-    if (result.success) {
-      // Success - Supabase will handle redirect
-      window.location.href = '../app/dashboard.html';
-    } else {
-      showError('login-error', result.error || 'Login failed');
-    }
-  } else {
-    // Fallback to localStorage authentication
-    let users = [];
-    try {
-      users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    } catch { users = []; }
-    
-    const user = users.find(u => u.email === email);
-    
-    if (!user) {
-      showError('login-error', 'No account found with this email');
-      return;
-    }
-    
-    if (!user.isActive) {
-      showError('login-error', 'Your account has been deactivated');
-      return;
-    }
-    
-    if (!verifyPassword(password, user.password)) {
+  if (typeof supabaseSignIn !== 'function') {
+    showError('login-error', 'Database connection not available. Please try again later.');
+    return;
+  }
+  
+  // Use Supabase authentication
+  const result = await supabaseSignIn(email, password);
+  
+  if (!result.success) {
+    showError('login-error', result.error || 'Invalid email or password');
+    return;
+  }
+  
+  // Success - redirect to dashboard
+  window.location.href = '../app/dashboard.html';
+}
       showError('login-error', 'Incorrect password');
       return;
     }

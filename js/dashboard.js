@@ -274,9 +274,12 @@ function applyDark() {
 // ── Dashboard Rendering ────────────────────────────
 function renderDashboard() {
   const role = currentUser.role;
+  console.log('🔍 Dashboard: Rendering dashboard for role:', role);
+  console.log('🔍 Dashboard: Current user object:', currentUser);
   
   switch(role) {
     case 'administrator':
+      console.log('✅ Rendering Administrator Dashboard');
       renderAdministratorDashboard();
       break;
     case 'registrar':
@@ -288,7 +291,16 @@ function renderDashboard() {
     case 'counselor':
       renderCounselorDashboard();
       break;
+    case 'bursar':
+      console.log('✅ Rendering Bursar Dashboard');
+      renderBursarDashboard();
+      break;
+    case 'secretary':
+      console.log('✅ Rendering Secretary Dashboard');
+      renderSecretaryDashboard();
+      break;
     case 'staff':
+      console.log('⚠️ Rendering Staff Dashboard');
       renderStaffDashboard();
       break;
     case 'security':
@@ -298,6 +310,7 @@ function renderDashboard() {
       renderStudentDashboard();
       break;
     default:
+      console.log('⚠️ No role matched, rendering Staff Dashboard (default)');
       renderStaffDashboard();
   }
 }
@@ -319,11 +332,14 @@ function renderAdministratorDashboard() {
     <!-- Quick Actions -->
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Quick Actions</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         ${createQuickAction('Add Student', 'user-add', 'students.html')}
         ${createQuickAction('View All', 'view-list', 'students.html')}
         ${createQuickAction('Manage Users', 'users', 'users.html')}
         ${createQuickAction('Export Data', 'download', 'javascript:exportFromDashboard()')}
+        ${createQuickAction('Timetable', 'calendar', 'timetable.html')}
+        ${createQuickAction('Attendance', 'clipboard-check', 'attendance.html')}
+        ${createQuickAction('Fees', 'currency', 'fees.html')}
       </div>
     </div>
 
@@ -454,6 +470,435 @@ function renderCounselorDashboard() {
       </div>
     </div>
   `;
+}
+
+// ── Bursar Dashboard ───────────────────────────────
+function renderBursarDashboard() {
+  const stats = calculateStats();
+  
+  // Load fees data
+  let fees = {};
+  try {
+    fees = JSON.parse(localStorage.getItem('srs_fees')) || {};
+  } catch {
+    fees = {};
+  }
+  
+  // Calculate financial stats
+  let totalCollected = 0;
+  let totalOutstanding = 0;
+  let fullyPaid = 0;
+  let defaulters = 0;
+  
+  students.forEach(student => {
+    const feeRecord = fees[student.studentId];
+    if (feeRecord) {
+      totalCollected += feeRecord.totalPaid || 0;
+      totalOutstanding += feeRecord.balance || 0;
+      
+      if (feeRecord.balance === 0) fullyPaid++;
+      if (feeRecord.balance > 0 && feeRecord.totalPaid === 0) defaulters++;
+    }
+  });
+  
+  // Get recent payments
+  const recentPayments = [];
+  students.forEach(student => {
+    const feeRecord = fees[student.studentId];
+    if (feeRecord && feeRecord.payments) {
+      feeRecord.payments.forEach(payment => {
+        recentPayments.push({
+          ...payment,
+          studentName: student.fullName,
+          studentId: student.studentId
+        });
+      });
+    }
+  });
+  recentPayments.sort((a, b) => new Date(b.date) - new Date(a.date));
+  
+  document.getElementById('dashboard-content').innerHTML = `
+    <!-- Financial Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      ${createStatCard('Total Collected', 'UGX ' + formatCurrency(totalCollected), 'currency', 'green')}
+      ${createStatCard('Outstanding', 'UGX ' + formatCurrency(totalOutstanding), 'currency', 'red')}
+      ${createStatCard('Fully Paid', fullyPaid, 'check', 'blue')}
+      ${createStatCard('Defaulters', defaulters, 'alert', 'orange')}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Financial Management</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        ${createQuickAction('Manage Fees', 'currency', 'fees.html')}
+        ${createQuickAction('Record Payment', 'currency', 'fees.html')}
+        ${createQuickAction('View Reports', 'chart', 'fees.html')}
+        ${createQuickAction('Export Data', 'download', 'javascript:exportFromDashboard()')}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Recent Payments -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.2s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Recent Payments</h3>
+        ${renderRecentPayments(recentPayments.slice(0, 5))}
+      </div>
+
+      <!-- Payment Summary by Class -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.3s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Collection by Class</h3>
+        ${renderPaymentsByClass(stats.classDistribution, fees)}
+      </div>
+    </div>
+  `;
+}
+
+function renderRecentPayments(payments) {
+  if (payments.length === 0) {
+    return '<p class="text-sm text-gray-500 dark:text-gray-400">No recent payments</p>';
+  }
+  
+  return `
+    <div class="space-y-3">
+      ${payments.map((payment, i) => {
+        const date = new Date(payment.date).toLocaleDateString();
+        return `
+          <div class="activity-item flex items-start justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" style="animation-delay: ${i * 0.05}s">
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">${payment.studentName}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${payment.method} • Receipt: ${payment.receipt}</p>
+              <p class="text-xs text-gray-400 mt-0.5">${date}</p>
+            </div>
+            <div class="text-right">
+              <p class="text-sm font-bold text-green-600 dark:text-green-400">UGX ${formatCurrency(payment.amount)}</p>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderPaymentsByClass(classDistribution, fees) {
+  if (Object.keys(classDistribution).length === 0) {
+    return '<p class="text-sm text-gray-500 dark:text-gray-400">No data available</p>';
+  }
+  
+  const classTotals = {};
+  
+  students.forEach(student => {
+    const className = student.classLevel;
+    if (!classTotals[className]) {
+      classTotals[className] = { collected: 0, outstanding: 0 };
+    }
+    
+    const feeRecord = fees[student.studentId];
+    if (feeRecord) {
+      classTotals[className].collected += feeRecord.totalPaid || 0;
+      classTotals[className].outstanding += feeRecord.balance || 0;
+    }
+  });
+  
+  return `
+    <div class="space-y-3">
+      ${Object.entries(classTotals).sort((a, b) => a[0].localeCompare(b[0])).map(([className, totals]) => {
+        const total = totals.collected + totals.outstanding;
+        const percentage = total > 0 ? Math.round((totals.collected / total) * 100) : 0;
+        
+        return `
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${className}</span>
+              <span class="text-sm font-semibold text-gray-900 dark:text-white">${percentage}%</span>
+            </div>
+            <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-green-500 to-emerald-500" style="width: ${percentage}%"></div>
+            </div>
+            <div class="flex items-center justify-between mt-1">
+              <span class="text-xs text-green-600 dark:text-green-400">Collected: UGX ${formatCurrency(totals.collected)}</span>
+              <span class="text-xs text-red-600 dark:text-red-400">Outstanding: UGX ${formatCurrency(totals.outstanding)}</span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function formatCurrency(amount) {
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+// ── Secretary Dashboard ────────────────────────────
+function renderSecretaryDashboard() {
+  const stats = calculateStats();
+  
+  // Load secretary-specific data
+  let documents = [];
+  let appointments = [];
+  let visitors = [];
+  let announcements = [];
+  
+  try {
+    documents = JSON.parse(localStorage.getItem('srs_documents')) || [];
+    appointments = JSON.parse(localStorage.getItem('srs_appointments')) || [];
+    visitors = JSON.parse(localStorage.getItem('srs_visitors')) || [];
+    announcements = JSON.parse(localStorage.getItem('srs_announcements')) || [];
+  } catch {
+    // Initialize empty arrays if parsing fails
+  }
+  
+  // Calculate secretary stats
+  const pendingDocuments = documents.filter(d => d.status === 'pending').length;
+  const todayAppointments = appointments.filter(a => {
+    const apptDate = new Date(a.date).toDateString();
+    return apptDate === new Date().toDateString();
+  }).length;
+  const todayVisitors = visitors.filter(v => {
+    const visitDate = new Date(v.date).toDateString();
+    return visitDate === new Date().toDateString();
+  }).length;
+  const activeAnnouncements = announcements.filter(a => a.active).length;
+  
+  document.getElementById('dashboard-content').innerHTML = `
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      ${createStatCard('Pending Documents', pendingDocuments, 'document', 'blue')}
+      ${createStatCard('Today\'s Appointments', todayAppointments, 'calendar', 'green')}
+      ${createStatCard('Today\'s Visitors', todayVisitors, 'users', 'purple')}
+      ${createStatCard('Active Announcements', activeAnnouncements, 'megaphone', 'orange')}
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
+      <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Office Management</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        ${createQuickAction('Documents', 'document', 'javascript:openDocuments()')}
+        ${createQuickAction('Appointments', 'calendar', 'javascript:openAppointments()')}
+        ${createQuickAction('Visitors Log', 'users', 'javascript:openVisitors()')}
+        ${createQuickAction('Announcements', 'megaphone', 'javascript:openAnnouncements()')}
+        ${createQuickAction('View Students', 'view-list', 'students.html')}
+        ${createQuickAction('Correspondence', 'mail', 'javascript:openCorrespondence()')}
+        ${createQuickAction('Phone Log', 'phone', 'javascript:openPhoneLog()')}
+        ${createQuickAction('Reports', 'chart', 'javascript:openReports()')}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <!-- Today's Appointments -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.2s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Today's Appointments</h3>
+        ${renderTodayAppointments(appointments)}
+      </div>
+
+      <!-- Recent Visitors -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.3s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Recent Visitors</h3>
+        ${renderRecentVisitors(visitors)}
+      </div>
+
+      <!-- Pending Documents -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.4s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Pending Documents</h3>
+        ${renderPendingDocuments(documents)}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
+      <!-- Active Announcements -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.5s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Active Announcements</h3>
+        ${renderActiveAnnouncements(announcements)}
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.6s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Quick Stats</h3>
+        ${renderQuickStats(stats)}
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="glass-card rounded-3xl p-6 fade-in" style="animation-delay: 0.7s">
+        <h3 class="font-display text-xl text-gray-900 dark:text-white mb-4">Recent Activity</h3>
+        ${renderRecentActivity(getRecentActivity())}
+      </div>
+    </div>
+  `;
+}
+
+function renderTodayAppointments(appointments) {
+  const today = new Date().toDateString();
+  const todayAppts = appointments.filter(a => new Date(a.date).toDateString() === today)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  if (todayAppts.length === 0) {
+    return '<p class="text-sm text-gray-500 dark:text-gray-400">No appointments scheduled for today</p>';
+  }
+  
+  return `
+    <div class="space-y-3">
+      ${todayAppts.slice(0, 5).map((appt, i) => {
+        const time = new Date(appt.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return `
+          <div class="activity-item flex items-start justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" style="animation-delay: ${i * 0.05}s">
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">${appt.title}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${appt.with || 'N/A'} • ${time}</p>
+              ${appt.location ? `<p class="text-xs text-gray-400 mt-0.5">📍 ${appt.location}</p>` : ''}
+            </div>
+            <span class="text-xs px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400">
+              ${time}
+            </span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderRecentVisitors(visitors) {
+  const recentVisitors = visitors.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  
+  if (recentVisitors.length === 0) {
+    return '<p class="text-sm text-gray-500 dark:text-gray-400">No visitors logged yet</p>';
+  }
+  
+  return `
+    <div class="space-y-3">
+      ${recentVisitors.map((visitor, i) => {
+        const date = new Date(visitor.date);
+        const timeAgo = formatTimeAgo(visitor.date);
+        return `
+          <div class="activity-item flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" style="animation-delay: ${i * 0.05}s">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background: linear-gradient(135deg, #1a1a1a, #de2d0c)">
+              ${visitor.name.charAt(0).toUpperCase()}
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">${visitor.name}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${visitor.purpose || 'Visit'}</p>
+              <p class="text-xs text-gray-400 mt-0.5">${timeAgo}</p>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderPendingDocuments(documents) {
+  const pending = documents.filter(d => d.status === 'pending').slice(0, 5);
+  
+  if (pending.length === 0) {
+    return '<p class="text-sm text-gray-500 dark:text-gray-400">No pending documents</p>';
+  }
+  
+  return `
+    <div class="space-y-3">
+      ${pending.map((doc, i) => {
+        const typeColor = 
+          doc.type === 'Letter' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+          doc.type === 'Certificate' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400' :
+          doc.type === 'Report' ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400' :
+          'bg-gray-50 dark:bg-gray-900/20 text-gray-600 dark:text-gray-400';
+        
+        return `
+          <div class="activity-item flex items-start justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" style="animation-delay: ${i * 0.05}s">
+            <div class="flex-1">
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">${doc.title}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${doc.description || 'No description'}</p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded-full ${typeColor}">
+              ${doc.type}
+            </span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderActiveAnnouncements(announcements) {
+  const active = announcements.filter(a => a.active).slice(0, 5);
+  
+  if (active.length === 0) {
+    return '<p class="text-sm text-gray-500 dark:text-gray-400">No active announcements</p>';
+  }
+  
+  return `
+    <div class="space-y-3">
+      ${active.map((ann, i) => {
+        const priorityColor = 
+          ann.priority === 'high' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400' :
+          ann.priority === 'medium' ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400' :
+          'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400';
+        
+        return `
+          <div class="activity-item p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors" style="animation-delay: ${i * 0.05}s">
+            <div class="flex items-start justify-between mb-2">
+              <p class="text-sm font-semibold text-gray-900 dark:text-white flex-1">${ann.title}</p>
+              <span class="text-xs px-2 py-1 rounded-full ${priorityColor}">
+                ${ann.priority || 'normal'}
+              </span>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400">${ann.message}</p>
+            <p class="text-xs text-gray-400 mt-1">${formatTimeAgo(ann.date)}</p>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function renderQuickStats(stats) {
+  return `
+    <div class="space-y-4">
+      <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Total Students</span>
+        <span class="text-lg font-bold text-gray-900 dark:text-white">${stats.total}</span>
+      </div>
+      <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Classes</span>
+        <span class="text-lg font-bold text-gray-900 dark:text-white">${stats.classes}</span>
+      </div>
+      <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Male Students</span>
+        <span class="text-lg font-bold text-blue-600 dark:text-blue-400">${stats.male}</span>
+      </div>
+      <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
+        <span class="text-sm text-gray-600 dark:text-gray-400">Female Students</span>
+        <span class="text-lg font-bold text-pink-600 dark:text-pink-400">${stats.female}</span>
+      </div>
+    </div>
+  `;
+}
+
+// Placeholder functions for Quick Actions (to be implemented)
+function openDocuments() {
+  showToast('Document Management feature coming soon', 'info');
+}
+
+function openAppointments() {
+  showToast('Appointments feature coming soon', 'info');
+}
+
+function openVisitors() {
+  showToast('Visitors Log feature coming soon', 'info');
+}
+
+function openAnnouncements() {
+  showToast('Announcements feature coming soon', 'info');
+}
+
+function openCorrespondence() {
+  showToast('Correspondence feature coming soon', 'info');
+}
+
+function openPhoneLog() {
+  showToast('Phone Log feature coming soon', 'info');
+}
+
+function openReports() {
+  showToast('Reports feature coming soon', 'info');
 }
 
 // ── Staff Dashboard ────────────────────────────────
@@ -688,7 +1133,12 @@ function createStatCard(label, value, icon, color) {
     chart: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>',
     'clipboard-list': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>',
     check: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-    user: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>'
+    user: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>',
+    currency: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+    alert: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>',
+    document: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+    megaphone: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
+    mail: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>'
   };
   
   const colorClasses = {
@@ -725,7 +1175,14 @@ function createQuickAction(label, icon, link) {
     'search': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>',
     'edit': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>',
     'users': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>',
-    'clipboard-list': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>'
+    'clipboard-list': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>',
+    'calendar': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+    'clipboard-check': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>',
+    'currency': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+    'document': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+    'megaphone': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>',
+    'mail': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>',
+    'phone': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>'
   };
   
   const isJavascript = link.startsWith('javascript:');

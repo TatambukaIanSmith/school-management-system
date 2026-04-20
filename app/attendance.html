@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Tracking - School Registration System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['DM Sans', 'sans-serif'],
+            display: ['DM Serif Display', 'serif'],
+          },
+          colors: {
+            brand: {50: '#f9fafb',100: '#f3f4f6',200: '#e5e7eb',300: '#d1d5db',400: '#9ca3af',500: '#000000',600: '#000000',700: '#000000',800: '#000000',900: '#000000'}
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --brand: #000000;
+      --brand-light: #1a1a1a;
+      --brand-dark: #000000;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f7f3f0;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark body, body.dark-mode {
+      background: #0f0d0c;
+      color: #f0ebe8;
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
+      transition: box-shadow 0.25s;
+    }
+
+    .dark .glass-card {
+      background: rgba(30,22,18,0.72);
+      border: 1px solid rgba(26,26,26,0.12);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .navbar-glass {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .dark .navbar-glass {
+      background: rgba(15,13,12,0.88);
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+    }
+
+    .btn-brand {
+      background: #000000;
+      color: white;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .btn-brand:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+    }
+
+    .status-btn {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .status-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .status-btn.active {
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+    }
+
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-switch.active { background: #000000; }
+
+    .toggle-switch .knob {
+      width: 18px; height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px; left: 3px;
+      transition: transform 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch.active .knob { transform: translateX(20px); }
+
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+      background: rgba(0,0,0,0.08);
+    }
+
+    .nav-link.active {
+      background: rgba(0,0,0,0.12);
+      color: #000000;
+      font-weight: 600;
+    }
+
+    .mesh-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .mesh-bg::before, .mesh-bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+    }
+
+    .mesh-bg::before {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #1a1a1a 0%, transparent 70%);
+      top: -100px; right: -100px;
+    }
+
+    .mesh-bg::after {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #000000 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+
+    .dark .mesh-bg::before { opacity: 0.12; }
+    .dark .mesh-bg::after { opacity: 0.1; }
+  </style>
+</head>
+<body id="body-root">
+
+<div class="mesh-bg"></div>
+
+<!-- Navbar -->
+<nav class="navbar-glass sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-xl btn-brand flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+        </div>
+        <span class="font-display text-lg text-gray-900 dark:text-white">School Registration</span>
+      </div>
+
+      <div class="hidden md:flex items-center gap-2">
+        <a href="../index.html" class="nav-link text-sm text-gray-700 dark:text-gray-300">Home</a>
+        <a href="dashboard.html" class="nav-link text-sm text-gray-700 dark:text-gray-300">Dashboard</a>
+        <a href="students.html" class="nav-link text-sm text-gray-700 dark:text-gray-300">Students</a>
+        <a href="attendance.html" class="nav-link active text-sm text-gray-700 dark:text-gray-300">Attendance</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div id="user-info" class="flex items-center gap-2"></div>
+      
+      <div class="hidden sm:flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 14a6 6 0 110-12 6 6 0 010 12z"/>
+        </svg>
+        <div class="toggle-switch" id="dark-toggle" onclick="toggleDark()">
+          <div class="knob"></div>
+        </div>
+        <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+  
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="font-display text-4xl text-gray-900 dark:text-white mb-2">Attendance Tracking</h1>
+    <p class="text-gray-500 dark:text-gray-400">Mark and monitor student attendance</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card rounded-3xl p-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-500 dark:text-gray-400">Today's Attendance</span>
+        <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white" id="stat-present">0%</p>
+    </div>
+
+    <div class="glass-card rounded-3xl p-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-500 dark:text-gray-400">Absent Today</span>
+        <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white" id="stat-absent">0</p>
+    </div>
+
+    <div class="glass-card rounded-3xl p-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-500 dark:text-gray-400">Late Today</span>
+        <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white" id="stat-late">0</p>
+    </div>
+
+    <div class="glass-card rounded-3xl p-6">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-gray-500 dark:text-gray-400">Not Marked</span>
+        <div class="w-10 h-10 rounded-xl bg-gray-500/10 flex items-center justify-center">
+          <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      </div>
+      <p class="text-3xl font-bold text-gray-900 dark:text-white" id="stat-unmarked">0</p>
+    </div>
+  </div>
+
+  <!-- Class Selection & Date -->
+  <div class="glass-card rounded-3xl p-6 mb-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Select Class</label>
+          <select id="class-select" onchange="loadAttendance()" class="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+            <option value="">Choose a class...</option>
+            <option value="Senior 1">Senior 1</option>
+            <option value="Senior 2">Senior 2</option>
+            <option value="Senior 3">Senior 3</option>
+            <option value="Senior 4">Senior 4</option>
+            <option value="Senior 5">Senior 5</option>
+            <option value="Senior 6">Senior 6</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Date</label>
+          <input type="date" id="attendance-date" onchange="loadAttendance()" class="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 self-end">
+        <button onclick="markAllPresent()" class="px-4 py-2 rounded-xl bg-green-500 text-white text-sm font-semibold hover:bg-green-600 transition-colors">
+          Mark All Present
+        </button>
+        <button onclick="saveAttendance()" class="px-4 py-2 rounded-xl btn-brand text-sm font-semibold">
+          Save Attendance
+        </button>
+        <button onclick="exportAttendance()" class="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-semibold">
+          Export
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance List -->
+  <div id="attendance-container" class="glass-card rounded-3xl p-6">
+    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
+      <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+      </svg>
+      <p class="text-lg font-medium">Select a class and date to mark attendance</p>
+    </div>
+  </div>
+
+</main>
+
+<script src="../js/supabase.min.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-auth.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/attendance.js"></script>
+
+</body>
+</html>

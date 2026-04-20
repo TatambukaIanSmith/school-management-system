@@ -106,6 +106,29 @@ function removeProfile(profileId) {
   }
 }
 
+// Clear all saved profiles
+function clearAllProfiles() {
+  const profiles = getProfiles();
+  
+  if (profiles.length === 0) {
+    showProfileToast('No profiles to clear', 'info');
+    return;
+  }
+  
+  if (confirm(`Clear all ${profiles.length} saved profile${profiles.length !== 1 ? 's' : ''}? This will not sign you out.`)) {
+    localStorage.removeItem(PROFILES_KEY);
+    localStorage.removeItem(ACTIVE_PROFILE_KEY);
+    
+    showProfileToast('All profiles cleared', 'success');
+    
+    // Close menu and update UI
+    const menu = document.getElementById('profile-menu');
+    if (menu) menu.classList.add('hidden');
+    
+    updateProfileUI();
+  }
+}
+
 // Switch to a profile
 function switchToProfile(profileId) {
   const profiles = getProfiles();
@@ -115,6 +138,9 @@ function switchToProfile(profileId) {
     showProfileToast('Profile not found', 'error');
     return;
   }
+  
+  // IMPORTANT: Only allow manual switching, not automatic
+  console.log('🔄 Manual profile switch requested to:', profile.nickname);
   
   // Get user credentials from users storage
   const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
@@ -269,6 +295,14 @@ function renderProfileSwitcher() {
         
         <!-- Actions -->
         <div class="p-2 border-t border-gray-100 dark:border-white/5">
+          ${profiles.length > 0 ? `
+            <button onclick="clearAllProfiles()" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-900/20 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors mb-2">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              <span class="font-medium">Clear All Profiles</span>
+            </button>
+          ` : ''}
           <button onclick="logout()" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -388,14 +422,33 @@ if (document.readyState === 'loading') {
 }
 
 function initProfiles() {
+  // DISABLED: Profile switching is causing issues
+  // The system will no longer auto-switch profiles
+  console.log('⚠️ Profile switching system disabled to prevent auto-switching');
+  return;
+  
   // Only initialize on pages with user-info element
   const userInfo = document.getElementById('user-info');
   if (userInfo) {
     // Check if we have a session
     const session = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session') || '{}');
     if (session.userId) {
-      // Render immediately
+      // IMPORTANT: Don't auto-switch profiles on page load
+      // Only render the profile switcher UI
       renderProfileSwitcher();
+      
+      // Clear any active profile that doesn't match current session
+      const activeProfileId = getActiveProfileId();
+      if (activeProfileId) {
+        const profiles = getProfiles();
+        const activeProfile = profiles.find(p => p.id === activeProfileId);
+        
+        // If active profile doesn't match current session, clear it
+        if (activeProfile && activeProfile.userId !== session.userId) {
+          console.log('⚠️ Active profile mismatch, clearing active profile');
+          setActiveProfileId(null);
+        }
+      }
     }
   }
 }
