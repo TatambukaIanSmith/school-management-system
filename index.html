@@ -153,6 +153,214 @@
 </div>
 </section>
 
+<!-- ══ WHO IS IT FOR? ════════════════════════════════════════════ -->
+<section id="who-is-it-for" class="py-24 px-5 relative">
+<div class="max-w-5xl mx-auto">
+<!-- Section header -->
+<div class="text-center mb-16 reveal">
+<p class="sec-label mb-4">WHO IS IT FOR?</p>
+<h2 class="f-display text-5xl md:text-6xl text-white mb-5">Built for everyone<br/><span class="brand-text-soft italic">in your school.</span></h2>
+<p class="text-lg max-w-2xl mx-auto" style="color:rgba(255,255,255,0.45)">From administrators to students, our system adapts to every role with tailored features and permissions.</p>
+</div>
+
+<!-- Role cards -->
+<div class="space-y-4">
+<!-- Admins -->
+<div class="glass rounded-2xl overflow-hidden reveal transition-all" style="transition-delay:0.1s" id="role-admin">
+<div class="p-6 cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleRole('admin')">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl glass-warm flex items-center justify-center flex-shrink-0">
+<span class="text-3xl">📦</span>
+</div>
+<div class="flex-1">
+<h3 class="f-head text-xl font-700 text-white mb-1">Admins</h3>
+<p class="text-sm" style="color:var(--muted)">Full system control, user management, and analytics dashboard</p>
+</div>
+<svg class="w-6 h-6 text-white/30 flex-shrink-0 transition-transform" id="arrow-admin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+</svg>
+</div>
+</div>
+<!-- Expandable content -->
+<div class="px-6 pb-6 hidden" id="content-admin">
+<div class="pt-4 border-t border-white/10">
+<h4 class="f-head text-sm font-700 text-white mb-3 uppercase tracking-wide">Key Benefits:</h4>
+<ul class="space-y-2 text-sm" style="color:rgba(255,255,255,0.7)">
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Complete oversight of all school operations and data</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Manage users, assign roles, and control permissions</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Access comprehensive analytics and reports</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Configure system settings and customize workflows</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Bulk import/export data with CSV support</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- Teachers -->
+<div class="glass rounded-2xl overflow-hidden reveal transition-all" style="transition-delay:0.2s" id="role-teacher">
+<div class="p-6 cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleRole('teacher')">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl glass-warm flex items-center justify-center flex-shrink-0">
+<svg class="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+</svg>
+</div>
+<div class="flex-1">
+<h3 class="f-head text-xl font-700 text-white mb-1">Teachers</h3>
+<p class="text-sm" style="color:var(--muted)">Create exams, grade students, track attendance, and manage classes</p>
+</div>
+<svg class="w-6 h-6 text-white/30 flex-shrink-0 transition-transform" id="arrow-teacher" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+</svg>
+</div>
+</div>
+<!-- Expandable content -->
+<div class="px-6 pb-6 hidden" id="content-teacher">
+<div class="pt-4 border-t border-white/10">
+<h4 class="f-head text-sm font-700 text-white mb-3 uppercase tracking-wide">Key Benefits:</h4>
+<ul class="space-y-2 text-sm" style="color:rgba(255,255,255,0.7)">
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Create and manage exams with multiple question types</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Automated grading for objective questions</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Track student attendance and participation</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>View class performance analytics and insights</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Communicate with students and parents</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- Students -->
+<div class="glass rounded-2xl overflow-hidden reveal transition-all" style="transition-delay:0.3s" id="role-student">
+<div class="p-6 cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleRole('student')">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl glass-warm flex items-center justify-center flex-shrink-0">
+<span class="text-3xl">🎓</span>
+</div>
+<div class="flex-1">
+<h3 class="f-head text-xl font-700 text-white mb-1">Students</h3>
+<p class="text-sm" style="color:var(--muted)">Take exams, view grades, access learning materials, and track progress</p>
+</div>
+<svg class="w-6 h-6 text-white/30 flex-shrink-0 transition-transform" id="arrow-student" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+</svg>
+</div>
+</div>
+<!-- Expandable content -->
+<div class="px-6 pb-6 hidden" id="content-student">
+<div class="pt-4 border-t border-white/10">
+<h4 class="f-head text-sm font-700 text-white mb-3 uppercase tracking-wide">Key Benefits:</h4>
+<ul class="space-y-2 text-sm" style="color:rgba(255,255,255,0.7)">
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Take exams online with intuitive interface</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>View grades and feedback instantly</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Track academic progress and performance trends</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Access learning materials and resources</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Mobile-friendly access from any device</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<!-- Parents -->
+<div class="glass rounded-2xl overflow-hidden reveal transition-all" style="transition-delay:0.4s" id="role-parent">
+<div class="p-6 cursor-pointer hover:bg-white/5 transition-colors" onclick="toggleRole('parent')">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-xl glass-warm flex items-center justify-center flex-shrink-0">
+<svg class="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+</svg>
+</div>
+<div class="flex-1">
+<h3 class="f-head text-xl font-700 text-white mb-1">Parents</h3>
+<p class="text-sm" style="color:var(--muted)">Monitor child's performance, attendance, and communicate with teachers</p>
+</div>
+<svg class="w-6 h-6 text-white/30 flex-shrink-0 transition-transform" id="arrow-parent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+</svg>
+</div>
+</div>
+<!-- Expandable content -->
+<div class="px-6 pb-6 hidden" id="content-parent">
+<div class="pt-4 border-t border-white/10">
+<h4 class="f-head text-sm font-700 text-white mb-3 uppercase tracking-wide">Key Benefits:</h4>
+<ul class="space-y-2 text-sm" style="color:rgba(255,255,255,0.7)">
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Real-time access to child's academic performance</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Monitor attendance and punctuality</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Receive notifications about important updates</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>Direct communication with teachers</span>
+</li>
+<li class="flex items-start gap-2">
+<svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<span>View exam schedules and results</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Additional roles note -->
+<div class="text-center mt-12 reveal" style="transition-delay:0.5s">
+<p class="text-sm" style="color:var(--muted)">Plus 5 more specialized roles: Registrar, Librarian, Accountant, IT Support, and Guest</p>
+</div>
+</div>
+</section>
+
 <!-- ══ TESTIMONIALS ══════════════════════════════════════════════ -->
 <section id="testimonials" class="py-24 px-5 relative">
 <div class="max-w-7xl mx-auto">
@@ -497,6 +705,34 @@ const revealObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
   revealObserver.observe(el);
 });
+
+// ── Role card toggle function ──
+function toggleRole(role) {
+  const content = document.getElementById('content-' + role);
+  const arrow = document.getElementById('arrow-' + role);
+  
+  if (content.classList.contains('hidden')) {
+    // Close all other role cards
+    document.querySelectorAll('[id^="content-"]').forEach(el => {
+      if (el.id !== 'content-' + role) {
+        el.classList.add('hidden');
+      }
+    });
+    document.querySelectorAll('[id^="arrow-"]').forEach(el => {
+      if (el.id !== 'arrow-' + role) {
+        el.style.transform = 'rotate(0deg)';
+      }
+    });
+    
+    // Open clicked card
+    content.classList.remove('hidden');
+    arrow.style.transform = 'rotate(180deg)';
+  } else {
+    // Close clicked card
+    content.classList.add('hidden');
+    arrow.style.transform = 'rotate(0deg)';
+  }
+}
 
 // ── Feature card mouse tracking ──
 document.querySelectorAll('.feat-card').forEach(card => {
