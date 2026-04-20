@@ -15,9 +15,9 @@ let students = [];
 
 
 // ── Init ───────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   console.log('Dashboard: DOMContentLoaded fired');
-  checkAuth();
+  await checkAuth();
   loadData();
   initDarkMode();
   
@@ -123,7 +123,7 @@ function updateRecentActivity() {
 }
 
 // ── Authentication ─────────────────────────────────
-function checkAuth() {
+async function checkAuth() {
   try {
     currentUser = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session'));
   } catch {
@@ -131,8 +131,33 @@ function checkAuth() {
   }
   
   if (!currentUser) {
-    window.location.href = '../auth/login.html';
-    return;
+    // Check if Supabase has a session (OAuth callback scenario)
+    if (typeof window.supabaseClient !== 'undefined' && window.supabaseClient) {
+      try {
+        console.log('🔵 No local session, checking Supabase...');
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
+        if (session && session.user) {
+          console.log('✅ Found Supabase session, waiting for local session creation...');
+          // Wait for handleAuthenticatedUser to create the local session
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Check again
+          try {
+            currentUser = JSON.parse(localStorage.getItem(window.SESSION_KEY || 'srs_session'));
+          } catch {
+            currentUser = null;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking Supabase session:', error);
+      }
+    }
+    
+    // If still no session, redirect to login
+    if (!currentUser) {
+      window.location.href = '../auth/login.html';
+      return;
+    }
   }
   
   permissions = window.PERMISSIONS[currentUser.role] || window.PERMISSIONS.staff;
@@ -163,12 +188,24 @@ function checkAuth() {
   if (currentUser.role === 'administrator') {
     const usersLink = document.getElementById('users-link');
     if (usersLink) usersLink.style.display = 'block';
+    
+    const sidebarUsersLink = document.getElementById('sidebar-users-link');
+    if (sidebarUsersLink) sidebarUsersLink.style.display = 'flex';
   }
   
   // Show exams link for teachers, counselors, and administrators
   if (['teacher', 'counselor', 'administrator'].includes(currentUser.role)) {
     const examsLink = document.getElementById('exams-link');
     if (examsLink) examsLink.style.display = 'block';
+    
+    const sidebarExamsLink = document.getElementById('sidebar-exams-link');
+    if (sidebarExamsLink) sidebarExamsLink.style.display = 'flex';
+  }
+  
+  // Show student exams link for students
+  if (currentUser.role === 'student') {
+    const sidebarStudentExamsLink = document.getElementById('sidebar-student-exams-link');
+    if (sidebarStudentExamsLink) sidebarStudentExamsLink.style.display = 'flex';
   }
 }
 

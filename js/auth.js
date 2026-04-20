@@ -303,7 +303,23 @@ if (document.getElementById('login-form')) {
   document.getElementById('login-form').addEventListener('submit', handleLogin);
 }
 
-function handleLogin(e) {
+// ── Google Sign-In Button ──────────────────────────
+async function handleGoogleSignIn() {
+  if (typeof supabaseSignInWithGoogle === 'function') {
+    const result = await supabaseSignInWithGoogle();
+    if (!result.success && result.error) {
+      showError('login-error', result.error);
+    }
+    // If successful, Supabase will redirect automatically
+  } else {
+    alert('Google Sign-In is not configured. Please set up Supabase first.');
+  }
+}
+
+// Expose to window for onclick handler
+window.handleGoogleSignIn = handleGoogleSignIn;
+
+async function handleLogin(e) {
   e.preventDefault();
   
   if (!validateLogin()) return;
@@ -311,36 +327,44 @@ function handleLogin(e) {
   const email = document.getElementById('email').value.trim().toLowerCase();
   const password = document.getElementById('password').value;
   
-  // Get users
-  let users = [];
-  try {
-    users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-  } catch { users = []; }
-  
-  // Find user
-  const user = users.find(u => u.email === email);
-  
-  if (!user) {
-    showError('login-error', 'No account found with this email');
-    return;
+  // Check if Supabase is available
+  if (typeof supabaseSignIn === 'function') {
+    // Use Supabase authentication
+    const result = await supabaseSignIn(email, password);
+    
+    if (result.success) {
+      // Success - Supabase will handle redirect
+      window.location.href = '../app/dashboard.html';
+    } else {
+      showError('login-error', result.error || 'Login failed');
+    }
+  } else {
+    // Fallback to localStorage authentication
+    let users = [];
+    try {
+      users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    } catch { users = []; }
+    
+    const user = users.find(u => u.email === email);
+    
+    if (!user) {
+      showError('login-error', 'No account found with this email');
+      return;
+    }
+    
+    if (!user.isActive) {
+      showError('login-error', 'Your account has been deactivated');
+      return;
+    }
+    
+    if (!verifyPassword(password, user.password)) {
+      showError('login-error', 'Incorrect password');
+      return;
+    }
+    
+    createSession(user);
+    window.location.href = '../app/dashboard.html';
   }
-  
-  if (!user.isActive) {
-    showError('login-error', 'Your account has been deactivated');
-    return;
-  }
-  
-  // Verify password
-  if (!verifyPassword(password, user.password)) {
-    showError('login-error', 'Incorrect password');
-    return;
-  }
-  
-  // Create session
-  createSession(user);
-  
-  // Redirect to dashboard
-  window.location.href = '../app/dashboard.html';
 }
 
 function validateLogin() {
@@ -396,13 +420,40 @@ function clearSession() {
   localStorage.removeItem(SESSION_KEY);
 }
 
-function requireAuth() {
-  const session = getSession();
-  if (!session) {
-    window.location.href = '../auth/login.html';
-    return null;
+// NEW: Async version that waits for Supabase session
+async function requireAuth() {
+  // First check localStorage session
+  const localSession = getSession();
+  if (localSession) {
+    return localSession;
   }
-  return session;
+  
+  // If no local session, check if Supabase is available and has a session
+  if (typeof window.supabaseClient !== 'undefined' && window.supabaseClient) {
+    try {
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (session && session.user) {
+        console.log('✅ Found Supabase session, creating local session');
+        // Session exists in Supabase but not in localStorage
+        // This happens after OAuth redirect
+        // The handleAuthenticatedUser function will create the session
+        // Wait a bit for it to complete
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Check again
+        const newLocalSession = getSession();
+        if (newLocalSession) {
+          return newLocalSession;
+        }
+      }
+    } catch (error) {
+      console.error('Error checking Supabase session:', error);
+    }
+  }
+  
+  // No session found, redirect to login
+  window.location.href = '../auth/login.html';
+  return null;
 }
 
 function logout() {
