@@ -64,7 +64,7 @@ async function checkCurrentSession() {
 // Handle authenticated user
 async function handleAuthenticatedUser(user) {
   try {
-    console.log('🔵 Handling authenticated user:', user.email);
+    console.log('🔵 handleAuthenticatedUser: Processing user:', user.email);
     
     // Get or create user profile in database
     const { data: profile, error } = await supabaseClient
@@ -73,35 +73,44 @@ async function handleAuthenticatedUser(user) {
       .eq('id', user.id)
       .single();
     
-    console.log('Profile query result:', { profile, error });
+    console.log('🔵 handleAuthenticatedUser: Profile query result:', { profile, error });
     
     if (error && error.code === 'PGRST116') {
-      // User doesn't exist, create profile
-      console.log('🔵 Creating new user profile...');
+      // User doesn't exist in database - this should only happen for OAuth users
+      console.log('🔵 handleAuthenticatedUser: No profile found, creating new profile for OAuth user');
+      
+      // Get role from user metadata (set during signup) or default to staff
+      const roleFromMetadata = user.user_metadata?.role || 'staff';
+      
       const newProfile = {
         id: user.id,
         email: user.email,
         full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-        role: 'staff', // Default role
+        role: roleFromMetadata, // Use role from metadata, not hardcoded 'staff'
+        employee_id: user.user_metadata?.employee_id || null,
+        class: user.user_metadata?.class || null,
         photo_url: user.user_metadata?.avatar_url || null,
         is_active: true,
         created_at: new Date().toISOString(),
         last_login: new Date().toISOString()
       };
       
+      console.log('🔵 handleAuthenticatedUser: Creating profile with role:', newProfile.role);
+      
       const { error: insertError } = await supabaseClient.from('users').insert([newProfile]);
       
       if (insertError) {
-        console.warn('⚠️ Could not create profile in database (RLS policy):', insertError.message);
-        console.log('✅ Creating session anyway with user metadata');
+        console.warn('⚠️ handleAuthenticatedUser: Could not create profile in database (RLS policy):', insertError.message);
+        console.log('✅ handleAuthenticatedUser: Creating session anyway with user metadata');
         // Still create session even if profile creation fails
       } else {
-        console.log('✅ Profile created successfully');
+        console.log('✅ handleAuthenticatedUser: Profile created successfully');
       }
       
       createSupabaseSession(user, newProfile);
     } else if (profile) {
-      console.log('✅ Profile found, updating last login');
+      console.log('✅ handleAuthenticatedUser: Profile found with role:', profile.role);
+      
       // Update last login (may fail due to RLS, that's ok)
       await supabaseClient
         .from('users')
@@ -109,28 +118,34 @@ async function handleAuthenticatedUser(user) {
         .eq('id', user.id)
         .then(({ error }) => {
           if (error) {
-            console.warn('⚠️ Could not update last login (RLS policy)');
+            console.warn('⚠️ handleAuthenticatedUser: Could not update last login (RLS policy)');
           }
         });
       
       createSupabaseSession(user, profile);
     } else if (error) {
-      console.warn('⚠️ Error fetching profile:', error.message);
-      // Create session anyway with basic info
+      console.warn('⚠️ handleAuthenticatedUser: Error fetching profile:', error.message);
+      // Create session anyway with basic info from user metadata
+      const roleFromMetadata = user.user_metadata?.role || 'staff';
       createSupabaseSession(user, {
         full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-        role: 'staff',
+        role: roleFromMetadata,
+        employee_id: user.user_metadata?.employee_id || null,
+        class: user.user_metadata?.class || null,
         photo_url: user.user_metadata?.avatar_url
       });
     }
     
-    console.log('✅ Session created, user authenticated');
+    console.log('✅ handleAuthenticatedUser: Session created, user authenticated');
   } catch (error) {
-    console.error('❌ Error handling authenticated user:', error);
+    console.error('❌ handleAuthenticatedUser: Error handling authenticated user:', error);
     // Create basic session as fallback
+    const roleFromMetadata = user.user_metadata?.role || 'staff';
     createSupabaseSession(user, {
       full_name: user.user_metadata?.full_name || user.email.split('@')[0],
-      role: 'staff',
+      role: roleFromMetadata,
+      employee_id: user.user_metadata?.employee_id || null,
+      class: user.user_metadata?.class || null,
       photo_url: user.user_metadata?.avatar_url
     });
   }
@@ -150,11 +165,14 @@ function handleUnauthenticatedUser() {
 
 // Create session from Supabase user
 function createSupabaseSession(user, profile) {
+  console.log('🔵 createSupabaseSession: Creating session with profile:', profile);
+  
   const session = {
     userId: user.id,
     email: user.email,
     fullName: profile.full_name || user.user_metadata?.full_name,
     role: profile.role || 'staff',
+    employeeId: profile.employee_id || user.user_metadata?.employee_id,
     photoURL: user.user_metadata?.avatar_url || profile.photo_url,
     loginAt: new Date().toISOString()
   };
@@ -162,6 +180,8 @@ function createSupabaseSession(user, profile) {
   if (profile.class) {
     session.class = profile.class;
   }
+  
+  console.log('✅ createSupabaseSession: Session created with role:', session.role);
   
   localStorage.setItem('srs_session', JSON.stringify(session));
 }
@@ -189,6 +209,8 @@ async function supabaseSignUp(email, password, userData) {
   try {
     const { fullName, employeeId, role = 'staff', class: studentClass } = userData;
     
+    console.log('🔵 supabaseSignUp: Creating user with role:', role);
+    
     // Create user account with email confirmation
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
@@ -206,9 +228,11 @@ async function supabaseSignUp(email, password, userData) {
     
     if (error) throw error;
     
+    console.log('✅ supabaseSignUp: Auth user created, now creating profile in database...');
+    
     // Create user profile in database
     if (data.user) {
-      await supabaseClient.from('users').insert([{
+      const { data: insertData, error: insertError } = await supabaseClient.from('users').insert([{
         id: data.user.id,
         email: email,
         full_name: fullName,
@@ -219,22 +243,30 @@ async function supabaseSignUp(email, password, userData) {
         created_at: new Date().toISOString(),
         last_login: new Date().toISOString()
       }]);
+      
+      if (insertError) {
+        console.error('❌ supabaseSignUp: Error creating profile:', insertError);
+        // Don't fail the signup, but log the error
+      } else {
+        console.log('✅ supabaseSignUp: Profile created successfully with role:', role);
+      }
     }
     
-    console.log('Sign up successful:', data.user.email, 'Role:', role);
+    console.log('✅ supabaseSignUp: Sign up complete for:', data.user.email, 'Role:', role);
     
     // Check if email confirmation is required
     if (data.user && !data.session) {
       return { 
         success: true, 
         user: data.user,
+        role: role,
         message: 'Please check your email to verify your account!'
       };
     }
     
-    return { success: true, user: data.user };
+    return { success: true, user: data.user, role: role };
   } catch (error) {
-    console.error('Sign up error:', error);
+    console.error('❌ supabaseSignUp: Sign up error:', error);
     return { success: false, error: error.message };
   }
 }
