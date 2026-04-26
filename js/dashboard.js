@@ -995,10 +995,11 @@ function renderStudentDashboard() {
     <!-- Quick Actions -->
     <div class="glass-card rounded-3xl p-6 mb-8 fade-in" style="animation-delay: 0.1s">
       <h2 class="font-display text-2xl text-gray-900 dark:text-white mb-4">Student Portal</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
         ${createQuickAction('Take Exam', 'clipboard-list', 'student-exams.html')}
         ${createQuickAction('View Results', 'chart', 'student-exams.html?tab=results')}
         ${createQuickAction('My Profile', 'user', 'student-profile.html')}
+        ${createQuickAction('📱 Portal', 'view-list', '../student/portal.html')}
       </div>
     </div>
 

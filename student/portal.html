@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Portal — School Registration System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Supabase -->
+<script src="../js/supabase.min.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="../js/supabase-auth.js"></script>
+<script src="../js/auth.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-hover: rgba(255,255,255,0.08);
+    --accent: #f04923;
+    --accent2: #de2d0c;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Sora', sans-serif;
+    background: #000000;
+    color: #e2e8f0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG MESH */
+  .bg-mesh {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(240,73,35,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(222,45,12,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 60% 40%, rgba(26,26,26,0.15) 0%, transparent 55%);
+  }
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* GLASS */
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 20px;
+    transition: all 0.25s ease;
+  }
+  .glass-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+  .glass-nav {
+    background: rgba(0,0,0,0.75);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: rgba(0,0,0,0.95);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(40px);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0;
+  }
+  .sidebar-logo {
+    padding: 0 20px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 16px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 20px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: rgba(226,232,240,0.55);
+    font-size: 13.5px;
+    font-weight: 500;
+    position: relative;
+    margin: 1px 12px;
+    border-radius: 12px;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: #e2e8f0; }
+  .nav-item.active {
+    background: rgba(240,73,35,0.15);
+    color: #ff6b4a;
+    border: 1px solid rgba(240,73,35,0.25);
+  }
+  .nav-item.active::before {
+    content: '';
+    position: absolute; left: -12px; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 24px;
+    background: linear-gradient(to bottom, #f04923, #de2d0c);
+    border-radius: 0 3px 3px 0;
+  }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* MAIN */
+  .main { margin-left: 240px; min-height: 100vh; position: relative; z-index: 1; }
+
+  /* TOPBAR */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 32px;
+    background: rgba(0,0,0,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(32px);
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 32px; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+  /* GRADIENT TEXT */
+  .gradient-text {
+    background: linear-gradient(135deg, #ff6b4a 0%, #de2d0c 50%, #f04923 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* STAT CARD */
+  .stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s ease;
+  }
+  .stat-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.13); transform: translateY(-2px); }
+  .stat-card .glow {
+    position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.3;
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-green { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+  .badge-amber { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+  .badge-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+  .badge-purple { background: rgba(222,45,12,0.15); color: #ff8566; border: 1px solid rgba(222,45,12,0.25); }
+
+  /* PROGRESS BAR */
+  .progress-track { background: rgba(255,255,255,0.07); border-radius: 99px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    text-align: left; padding: 12px 16px;
+    font-size: 11px; font-weight: 600;
+    color: rgba(226,232,240,0.4);
+    letter-spacing: 0.8px; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .data-table td {
+    padding: 14px 16px;
+    font-size: 13.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+  .data-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .data-table tr:last-child td { border-bottom: none; }
+
+  /* SUBJECT ROW */
+  .subject-bar { height: 4px; border-radius: 99px; margin-top: 4px; }
+
+  /* TIMETABLE */
+  .period-card {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .period-card:hover { transform: scale(1.02); }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: linear-gradient(135deg, #f04923, #de2d0c);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 11px 22px;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(240,73,35,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(240,73,35,0.4); }
+  .btn-glass {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+  }
+  .btn-glass:hover { background: rgba(255,255,255,0.10); }
+
+  /* AVATAR */
+  .avatar-ring {
+    background: linear-gradient(135deg, #f04923, #de2d0c, #ec4899);
+    border-radius: 50%;
+    padding: 2px;
+    display: inline-flex;
+  }
+  .avatar-inner {
+    background: #1e1b4b;
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #ff6b4a;
+  }
+
+  /* NOTIFICATION DOT */
+  .notif-dot { width: 8px; height: 8px; background: #f04923; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.6; transform:scale(1.3); } }
+
+  /* MONO */
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* INPUT */
+  .glass-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px;
+    padding: 11px 16px;
+    font-size: 13.5px;
+    font-family: 'Sora', sans-serif;
+    color: #e2e8f0;
+    outline: none;
+    width: 100%;
+    transition: border 0.2s, background 0.2s;
+  }
+  .glass-input:focus { border-color: rgba(240,73,35,0.6); background: rgba(240,73,35,0.05); }
+  .glass-input::placeholder { color: rgba(226,232,240,0.3); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+
+  /* SHINE */
+  .shine {
+    position: relative; overflow: hidden;
+  }
+  .shine::after {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+  }
+  .shine:hover::after { left: 140%; }
+
+  /* HERO CARD */
+  .hero-card {
+    background: linear-gradient(135deg, rgba(240,73,35,0.20) 0%, rgba(222,45,12,0.12) 50%, rgba(26,26,26,0.15) 100%);
+    border: 1px solid rgba(240,73,35,0.30);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    border-radius: 24px;
+  }
+
+  /* GRADE CIRCLE */
+  .grade-circle {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  /* TIMELINE */
+  .timeline-item { position: relative; padding-left: 28px; padding-bottom: 20px; }
+  .timeline-item::before {
+    content: '';
+    position: absolute; left: 7px; top: 22px; bottom: 0;
+    width: 1px; background: rgba(255,255,255,0.08);
+  }
+  .timeline-item:last-child::before { display: none; }
+  .timeline-dot {
+    position: absolute; left: 0; top: 4px;
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 2px solid;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* GLOW BUTTON */
+  .pay-btn-glow {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 32px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.25s;
+    box-shadow: 0 6px 30px rgba(16,185,129,0.35);
+    letter-spacing: -0.2px;
+  }
+  .pay-btn-glow:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(16,185,129,0.5); }
+
+  /* RADIO */
+  .method-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.03);
+  }
+  .method-card:hover { border-color: rgba(240,73,35,0.4); background: rgba(240,73,35,0.06); }
+  .method-card.selected { border-color: rgba(240,73,35,0.6); background: rgba(240,73,35,0.10); }
+
+  /* ATTENDANCE ARC */
+  .att-ring { transform: rotate(-90deg); }
+
+  /* CHIP */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(226,232,240,0.7);
+  }
+
+  /* ANNOUNCEMENT */
+  .announcement-card {
+    border-radius: 16px;
+    padding: 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .announcement-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); }
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid-overlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="flex items-center gap-3">
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,#f04923,#de2d0c);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <div>
+        <div style="font-size:15px;font-weight:700;letter-spacing:-0.4px;color:#e2e8f0;">SRS Portal</div>
+        <div style="font-size:10.5px;color:rgba(226,232,240,0.4);letter-spacing:0.2px;">Student Portal</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:0 0;flex:1;overflow-y:auto;">
+    <div style="padding:0 12px 8px;font-size:10px;font-weight:600;color:rgba(226,232,240,0.25);letter-spacing:1.2px;text-transform:uppercase;margin:8px 0 4px;">Main</div>
+
+    <div class="nav-item active" onclick="showPage('dashboard',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('academics',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Academics
+    </div>
+    <div class="nav-item" onclick="showPage('timetable',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Timetable
+    </div>
+    <div class="nav-item" onclick="showPage('attendance',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Attendance
+    </div>
+
+    <div style="padding:0 12px 8px;font-size:10px;font-weight:600;color:rgba(226,232,240,0.25);letter-spacing:1.2px;text-transform:uppercase;margin:16px 0 4px;">Finance</div>
+    <div class="nav-item" onclick="showPage('fees',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      Pay Fees
+    </div>
+
+    <div style="padding:0 12px 8px;font-size:10px;font-weight:600;color:rgba(226,232,240,0.25);letter-spacing:1.2px;text-transform:uppercase;margin:16px 0 4px;">School</div>
+    <div class="nav-item" onclick="showPage('notices',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      Notices
+      <span style="margin-left:auto;background:rgba(239,68,68,0.8);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;">3</span>
+    </div>
+    <div class="nav-item" onclick="showPage('profile',this)">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      My Profile
+    </div>
+  </div>
+
+  <!-- SIDEBAR FOOTER -->
+  <div style="padding:16px 12px 0;border-top:1px solid rgba(255,255,255,0.06);margin-top:auto;">
+    <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(255,255,255,0.04);">
+      <div class="avatar-ring">
+        <div class="avatar-inner">AK</div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12.5px;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Aisha Kamara</div>
+        <div style="font-size:11px;color:rgba(226,232,240,0.4);">S.5 Science · #0024-25</div>
+      </div>
+      <div class="notif-dot"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div style="font-size:18px;font-weight:700;letter-spacing:-0.4px;" id="page-title">Good morning, Aisha ✨</div>
+      <div style="font-size:12px;color:rgba(226,232,240,0.4);margin-top:1px;" id="page-subtitle">Thursday, 24 April 2025 · Term 2, Week 8</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="position:relative;">
+        <input class="glass-input" style="width:220px;padding-left:38px;" placeholder="Search anything..."/>
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:0.35;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <button style="position:relative;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);border-radius:12px;padding:9px;cursor:pointer;display:flex;align-items:center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff6b4a" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span style="position:absolute;top:7px;right:7px;width:7px;height:7px;background:#ef4444;border-radius:50%;border:1.5px solid #000000;"></span>
+      </button>
+      <div class="avatar-ring">
+        <div class="avatar-inner">AK</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="page active" id="page-dashboard">
+    <!-- HERO -->
+    <div class="hero-card shine p-7 mb-6">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;">
+        <div>
+          <div class="chip mb-3">
+            <span style="width:6px;height:6px;background:#10b981;border-radius:50%;"></span> Term 2 · Senior 5 Science
+          </div>
+          <div style="font-size:26px;font-weight:700;letter-spacing:-0.8px;margin-bottom:6px;">
+            Welcome back, <span class="gradient-text">Aisha</span> 👋
+          </div>
+          <div style="color:rgba(226,232,240,0.55);font-size:13.5px;max-width:400px;line-height:1.5;">
+            You have <strong style="color:#fbbf24;">2 assignments</strong> due this week and your Maths exam is on Friday. You're on track!
+          </div>
+          <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn-primary" onclick="showPage('academics',document.querySelector('[onclick*=academics]'))">View Results</button>
+            <button class="btn-glass" onclick="showPage('fees',document.querySelector('[onclick*=fees]'))">Pay Fees</button>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;letter-spacing:0.5px;">OVERALL AVERAGE</div>
+          <div style="font-size:52px;font-weight:700;letter-spacing:-2px;font-family:'JetBrains Mono',monospace;" class="gradient-text">78%</div>
+          <div><span class="badge badge-green">↑ +4% from last term</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+      <div class="stat-card shine">
+        <div class="glow" style="background:#f04923;"></div>
+        <div style="font-size:11px;color:rgba(226,232,240,0.4);letter-spacing:0.5px;margin-bottom:8px;text-transform:uppercase;font-weight:600;">Attendance</div>
+        <div style="font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#ff6b4a;letter-spacing:-1px;">87%</div>
+        <div style="margin-top:10px;"><div class="progress-track"><div class="progress-fill" style="width:87%;background:linear-gradient(90deg,#f04923,#de2d0c);"></div></div></div>
+        <div style="font-size:11.5px;color:rgba(226,232,240,0.45);margin-top:8px;">54 of 62 days present</div>
+      </div>
+      <div class="stat-card shine">
+        <div class="glow" style="background:#10b981;"></div>
+        <div style="font-size:11px;color:rgba(226,232,240,0.4);letter-spacing:0.5px;margin-bottom:8px;text-transform:uppercase;font-weight:600;">Fee Balance</div>
+        <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#34d399;letter-spacing:-0.5px;">350,000</div>
+        <div style="font-size:10.5px;color:rgba(226,232,240,0.4);margin-bottom:8px;">UGX remaining</div>
+        <div class="progress-track"><div class="progress-fill" style="width:65%;background:linear-gradient(90deg,#10b981,#059669);"></div></div>
+        <div style="font-size:11.5px;color:rgba(226,232,240,0.45);margin-top:8px;">65% cleared this term</div>
+      </div>
+      <div class="stat-card shine">
+        <div class="glow" style="background:#f59e0b;"></div>
+        <div style="font-size:11px;color:rgba(226,232,240,0.4);letter-spacing:0.5px;margin-bottom:8px;text-transform:uppercase;font-weight:600;">Assignments Due</div>
+        <div style="font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#fbbf24;letter-spacing:-1px;">2</div>
+        <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+          <div style="font-size:12px;color:rgba(226,232,240,0.5);display:flex;justify-content:space-between;"><span>Physics Report</span><span style="color:#f87171;">Fri</span></div>
+          <div style="font-size:12px;color:rgba(226,232,240,0.5);display:flex;justify-content:space-between;"><span>Maths CAT</span><span style="color:#fbbf24;">Mon</span></div>
+        </div>
+      </div>
+      <div class="stat-card shine">
+        <div class="glow" style="background:#3b82f6;"></div>
+        <div style="font-size:11px;color:rgba(226,232,240,0.4);letter-spacing:0.5px;margin-bottom:8px;text-transform:uppercase;font-weight:600;">Class Rank</div>
+        <div style="font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#60a5fa;letter-spacing:-1px;">#3</div>
+        <div style="font-size:11.5px;color:rgba(226,232,240,0.45);margin-top:4px;">of 42 students</div>
+        <span class="badge badge-blue" style="margin-top:10px;">↑ 2 positions</span>
+      </div>
+    </div>
+
+    <!-- LOWER GRID -->
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;">
+      <!-- TODAY'S SCHEDULE -->
+      <div class="glass-card p-6">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div style="font-size:15px;font-weight:700;">Today's Schedule</div>
+          <span class="badge badge-purple">Thursday</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:14px;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(240,73,35,0.12);border:1px solid rgba(240,73,35,0.25);">
+            <div style="text-align:center;min-width:44px;">
+              <div style="font-size:12px;font-weight:700;color:#ff6b4a;font-family:'JetBrains Mono',monospace;">08:00</div>
+              <div style="font-size:10px;color:rgba(226,232,240,0.4);">75 min</div>
+            </div>
+            <div style="width:3px;height:36px;background:linear-gradient(to bottom,#f04923,#de2d0c);border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:13.5px;font-weight:600;">Mathematics</div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.45);">Mr. Ssemakula · Room A3</div>
+            </div>
+            <span class="badge badge-purple" style="margin-left:auto;">Now</span>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+            <div style="text-align:center;min-width:44px;">
+              <div style="font-size:12px;font-weight:700;color:rgba(226,232,240,0.6);font-family:'JetBrains Mono',monospace;">09:20</div>
+              <div style="font-size:10px;color:rgba(226,232,240,0.4);">75 min</div>
+            </div>
+            <div style="width:3px;height:36px;background:rgba(16,185,129,0.6);border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:13.5px;font-weight:600;color:rgba(226,232,240,0.7);">Physics</div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.4);">Ms. Nakato · Lab 2</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+            <div style="text-align:center;min-width:44px;">
+              <div style="font-size:12px;font-weight:700;color:rgba(226,232,240,0.6);font-family:'JetBrains Mono',monospace;">11:00</div>
+              <div style="font-size:10px;color:rgba(226,232,240,0.4);">75 min</div>
+            </div>
+            <div style="width:3px;height:36px;background:rgba(245,158,11,0.6);border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:13.5px;font-weight:600;color:rgba(226,232,240,0.7);">Chemistry</div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.4);">Mr. Ochen · Lab 1</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);">
+            <div style="text-align:center;min-width:44px;">
+              <div style="font-size:12px;font-weight:700;color:rgba(226,232,240,0.6);font-family:'JetBrains Mono',monospace;">13:00</div>
+              <div style="font-size:10px;color:rgba(226,232,240,0.4);">60 min</div>
+            </div>
+            <div style="width:3px;height:36px;background:rgba(59,130,246,0.6);border-radius:2px;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:13.5px;font-weight:600;color:rgba(226,232,240,0.7);">English Language</div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.4);">Mrs. Atim · Room C1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- QUICK NOTICES -->
+        <div class="glass-card p-5">
+          <div style="font-size:14px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+            Announcements
+            <span class="badge badge-red">3 new</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="announcement-card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Mock Exam Schedule Released</div>
+                <span class="badge badge-red" style="flex-shrink:0;margin-left:8px;">New</span>
+              </div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">Exams begin 5th May. Check timetable.</div>
+            </div>
+            <div class="announcement-card">
+              <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Sports Day — 2 May</div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">All students report to the pitch by 8:00AM.</div>
+            </div>
+            <div class="announcement-card">
+              <div style="font-size:13px;font-weight:600;color:#e2e8f0;">Fee Deadline — 30 April</div>
+              <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">Clear balance to avoid exam block.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="glass-card p-5">
+          <div style="font-size:14px;font-weight:700;margin-bottom:14px;">Quick Actions</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn-glass" style="font-size:12px;padding:10px;border-radius:12px;text-align:center;" onclick="showPage('fees',document.querySelector('[onclick*=fees]'))">💳 Pay Fees</button>
+            <button class="btn-glass" style="font-size:12px;padding:10px;border-radius:12px;text-align:center;" onclick="showPage('academics',document.querySelector('[onclick*=academics]'))">📊 My Grades</button>
+            <button class="btn-glass" style="font-size:12px;padding:10px;border-radius:12px;text-align:center;" onclick="showPage('timetable',document.querySelector('[onclick*=timetable]'))">📅 Timetable</button>
+            <button class="btn-glass" style="font-size:12px;padding:10px;border-radius:12px;text-align:center;" onclick="showPage('attendance',document.querySelector('[onclick*=attendance]'))">✅ Attendance</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ACADEMICS ============ -->
+  <div class="page" id="page-academics">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <div>
+        <div style="font-size:20px;font-weight:700;letter-spacing:-0.5px;">Academic Results</div>
+        <div style="font-size:13px;color:rgba(226,232,240,0.4);margin-top:2px;">Term 2 · Senior 5 Science · 2024/25</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <select class="glass-input" style="width:140px;cursor:pointer;">
+          <option>Term 2 — 2025</option>
+          <option>Term 1 — 2025</option>
+          <option>Term 3 — 2024</option>
+        </select>
+        <button class="btn-primary">Download Report</button>
+      </div>
+    </div>
+
+    <!-- SUMMARY ROW -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+      <div class="stat-card" style="text-align:center;">
+        <div style="font-size:36px;font-weight:700;font-family:'JetBrains Mono',monospace;background:linear-gradient(135deg,#ff6b4a,#ff8566);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;">78%</div>
+        <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">Overall Average</div>
+      </div>
+      <div class="stat-card" style="text-align:center;">
+        <div style="font-size:36px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#34d399;letter-spacing:-1px;">#3</div>
+        <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">Class Position</div>
+      </div>
+      <div class="stat-card" style="text-align:center;">
+        <div style="font-size:36px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#60a5fa;letter-spacing:-1px;">6</div>
+        <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">Subjects Taken</div>
+      </div>
+      <div class="stat-card" style="text-align:center;">
+        <div style="font-size:36px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#fbbf24;letter-spacing:-1px;">B+</div>
+        <div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:4px;">Grade</div>
+      </div>
+    </div>
+
+    <!-- SUBJECT TABLE -->
+    <div class="glass-card p-0" style="overflow:hidden;">
+      <div style="padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-size:15px;font-weight:700;">Subject Performance</div>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Teacher</th>
+            <th>CAT 1</th>
+            <th>CAT 2</th>
+            <th>Mid-Term</th>
+            <th>Avg</th>
+            <th>Grade</th>
+            <th>Trend</th>
+          </tr>
+        </thead>
+        <tbody id="subjects-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ TIMETABLE ============ -->
+  <div class="page" id="page-timetable">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <div>
+        <div style="font-size:20px;font-weight:700;letter-spacing:-0.5px;">Class Timetable</div>
+        <div style="font-size:13px;color:rgba(226,232,240,0.4);margin-top:2px;">S.5 Science · Term 2 · 2024/25</div>
+      </div>
+      <div style="display:flex;gap:8px;" id="day-tabs">
+        <button class="day-tab active-day" onclick="selectDay(this,'Mon')" style="padding:7px 16px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;border:none;font-family:'Sora',sans-serif;background:linear-gradient(135deg,#f04923,#de2d0c);color:white;">Mon</button>
+        <button class="day-tab" onclick="selectDay(this,'Tue')" style="padding:7px 16px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:rgba(226,232,240,0.6);font-family:'Sora',sans-serif;">Tue</button>
+        <button class="day-tab" onclick="selectDay(this,'Wed')" style="padding:7px 16px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:rgba(226,232,240,0.6);font-family:'Sora',sans-serif;">Wed</button>
+        <button class="day-tab" onclick="selectDay(this,'Thu')" style="padding:7px 16px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:rgba(226,232,240,0.6);font-family:'Sora',sans-serif;">Thu</button>
+        <button class="day-tab" onclick="selectDay(this,'Fri')" style="padding:7px 16px;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:rgba(226,232,240,0.6);font-family:'Sora',sans-serif;">Fri</button>
+      </div>
+    </div>
+    <div class="glass-card p-6" id="timetable-grid"></div>
+  </div>
+
+  <!-- ============ ATTENDANCE ============ -->
+  <div class="page" id="page-attendance">
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">Attendance Record</div>
+    <div style="font-size:13px;color:rgba(226,232,240,0.4);margin-bottom:24px;">Term 2 · 2024/25 · 62 school days</div>
+
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:20px;margin-bottom:24px;">
+      <!-- RING -->
+      <div class="glass-card p-6" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12"/>
+          <circle cx="80" cy="80" r="65" fill="none" stroke="url(#attGrad)" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="408.41" stroke-dashoffset="53.09" class="att-ring"/>
+          <defs>
+            <linearGradient id="attGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#f04923"/>
+              <stop offset="100%" stop-color="#10b981"/>
+            </linearGradient>
+          </defs>
+          <text x="80" y="74" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="26" font-weight="700" fill="#ff6b4a">87%</text>
+          <text x="80" y="94" text-anchor="middle" font-family="Sora,sans-serif" font-size="11" fill="rgba(226,232,240,0.45)">Attendance</text>
+        </svg>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-top:16px;">
+          <div style="text-align:center;padding:10px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:12px;">
+            <div style="font-size:20px;font-weight:700;color:#34d399;font-family:'JetBrains Mono',monospace;">54</div>
+            <div style="font-size:11px;color:rgba(226,232,240,0.45);">Present</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:12px;">
+            <div style="font-size:20px;font-weight:700;color:#f87171;font-family:'JetBrains Mono',monospace;">8</div>
+            <div style="font-size:11px;color:rgba(226,232,240,0.45);">Absent</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BY SUBJECT -->
+      <div class="glass-card p-6">
+        <div style="font-size:15px;font-weight:700;margin-bottom:18px;">By Subject</div>
+        <div style="display:flex;flex-direction:column;gap:14px;" id="att-subjects"></div>
+      </div>
+    </div>
+
+    <!-- CALENDAR HEATMAP -->
+    <div class="glass-card p-6">
+      <div style="font-size:15px;font-weight:700;margin-bottom:16px;">April 2025 Daily Record</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;" id="att-calendar"></div>
+      <div style="display:flex;gap:16px;margin-top:14px;font-size:12px;color:rgba(226,232,240,0.5);">
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;background:rgba(16,185,129,0.4);border-radius:4px;"></div>Present</div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;background:rgba(239,68,68,0.4);border-radius:4px;"></div>Absent</div>
+        <div style="display:flex;align-items:center;gap:6px;"><div style="width:12px;height:12px;background:rgba(245,158,11,0.4);border-radius:4px;"></div>Holiday</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FEES ============ -->
+  <div class="page" id="page-fees">
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">School Fees</div>
+    <div style="font-size:13px;color:rgba(226,232,240,0.4);margin-bottom:24px;">Term 2 · 2024/25 · Senior 5 Science</div>
+
+    <div style="display:grid;grid-template-columns:1fr 400px;gap:20px;">
+      <!-- LEFT -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- BALANCE CARD -->
+        <div style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(5,150,105,0.1));border:1px solid rgba(16,185,129,0.3);border-radius:24px;padding:28px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:rgba(16,185,129,0.08);border-radius:50%;"></div>
+          <div style="font-size:11px;color:rgba(226,232,240,0.5);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px;">Outstanding Balance</div>
+          <div style="font-size:42px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#34d399;letter-spacing:-1.5px;margin-bottom:4px;">350,000 <span style="font-size:18px;font-weight:500;">UGX</span></div>
+          <div class="progress-track" style="margin:16px 0 10px;height:8px;">
+            <div class="progress-fill" style="width:65%;background:linear-gradient(90deg,#10b981,#34d399);"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(226,232,240,0.5);">
+            <span>650,000 paid</span><span>1,000,000 total</span>
+          </div>
+        </div>
+
+        <!-- BREAKDOWN -->
+        <div class="glass-card p-6">
+          <div style="font-size:14px;font-weight:700;margin-bottom:16px;">Fee Breakdown</div>
+          <div id="fee-breakdown-rows"></div>
+        </div>
+
+        <!-- HISTORY -->
+        <div class="glass-card p-0" style="overflow:hidden;">
+          <div style="padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:14px;font-weight:700;">Payment History</div>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Description</th><th>Method</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="payment-history"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT: PAYMENT FORM -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="glass-card p-6" id="pay-form-section">
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px;">Make a Payment</div>
+          <div style="font-size:12px;color:rgba(226,232,240,0.4);margin-bottom:20px;">Select method & confirm</div>
+
+          <div style="font-size:12px;font-weight:600;color:rgba(226,232,240,0.4);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">Payment Method</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+            <div class="method-card selected" onclick="selectMethod(this,'MTN Mobile Money')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;background:rgba(245,158,11,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">📱</div>
+                <div><div style="font-size:13px;font-weight:600;">MTN Mobile Money</div><div style="font-size:11px;color:rgba(226,232,240,0.4);">Instant · No charge</div></div>
+                <div id="dot-MTN Mobile Money" style="margin-left:auto;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#f04923,#de2d0c);display:flex;align-items:center;justify-content:center;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+              </div>
+            </div>
+            <div class="method-card" onclick="selectMethod(this,'Airtel Money')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;background:rgba(239,68,68,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🔴</div>
+                <div><div style="font-size:13px;font-weight:600;">Airtel Money</div><div style="font-size:11px;color:rgba(226,232,240,0.4);">Instant · No charge</div></div>
+                <div id="dot-Airtel Money" style="margin-left:auto;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);"></div>
+              </div>
+            </div>
+            <div class="method-card" onclick="selectMethod(this,'Bank Transfer')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div style="width:36px;height:36px;background:rgba(59,130,246,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🏦</div>
+                <div><div style="font-size:13px;font-weight:600;">Bank Transfer</div><div style="font-size:11px;color:rgba(226,232,240,0.4);">1-2 days · Stanbic, DFCU</div></div>
+                <div id="dot-Bank Transfer" style="margin-left:auto;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:600;color:rgba(226,232,240,0.4);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">Phone Number</div>
+          <input class="glass-input" style="margin-bottom:16px;" type="tel" placeholder="07XX XXX XXXX" id="phone-input"/>
+
+          <div style="font-size:12px;font-weight:600;color:rgba(226,232,240,0.4);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px;">Amount (UGX)</div>
+          <input class="glass-input" style="margin-bottom:20px;" type="number" placeholder="350,000" id="amount-input"/>
+
+          <!-- PRN -->
+          <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:14px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:rgba(16,185,129,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="12" y2="15"/></svg>
+            </div>
+            <div>
+              <div style="font-size:10px;color:rgba(226,232,240,0.45);margin-bottom:2px;">Payment Reference Number</div>
+              <div class="mono" style="font-size:14px;font-weight:600;color:#34d399;letter-spacing:1px;">KMK-924873</div>
+            </div>
+            <div style="margin-left:auto;font-size:11px;color:rgba(226,232,240,0.35);text-align:right;">Valid until<br>30 Apr 2025</div>
+          </div>
+
+          <button class="pay-btn-glow" onclick="processPay()">Confirm & Pay UGX 350,000</button>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="glass-card p-8" id="pay-success" style="display:none;text-align:center;">
+          <div style="width:72px;height:72px;background:rgba(16,185,129,0.15);border:2px solid rgba(16,185,129,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px;">✅</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Payment Successful!</div>
+          <div style="font-size:13px;color:rgba(226,232,240,0.5);line-height:1.6;margin-bottom:20px;">UGX 350,000 received via MTN MoMo.<br>Your balance has been fully cleared.<br><span class="mono" style="font-size:12px;color:rgba(226,232,240,0.35);">Ref: KMK-924873</span></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn-glass" onclick="resetPay()" style="flex:1;">New Payment</button>
+            <button class="btn-primary" style="flex:1;">Download Receipt</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NOTICES ============ -->
+  <div class="page" id="page-notices">
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">School Notices</div>
+    <div style="font-size:13px;color:rgba(226,232,240,0.4);margin-bottom:24px;">Stay informed about school updates</div>
+    <div style="display:flex;flex-direction:column;gap:14px;" id="notices-list"></div>
+  </div>
+
+  <!-- ============ PROFILE ============ -->
+  <div class="page" id="page-profile">
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;">
+      <!-- PROFILE CARD -->
+      <div class="glass-card p-6" style="text-align:center;">
+        <div style="width:90px;height:90px;background:linear-gradient(135deg,#f04923,#de2d0c,#ec4899);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;font-weight:800;color:white;">AK</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Aisha Kamara</div>
+        <div style="font-size:12px;color:rgba(226,232,240,0.4);margin-bottom:16px;">Student No: 0024-25</div>
+        <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;">
+            <span style="color:rgba(226,232,240,0.45);">Class</span><span style="font-weight:600;">Senior 5 Science</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;">
+            <span style="color:rgba(226,232,240,0.45);">Term</span><span style="font-weight:600;">2 · 2024/25</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;">
+            <span style="color:rgba(226,232,240,0.45);">Stream</span><span style="font-weight:600;">PCB</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px;">
+            <span style="color:rgba(226,232,240,0.45);">House</span><span style="font-weight:600;">Nelson House</span>
+          </div>
+        </div>
+        <button class="btn-primary" style="width:100%;margin-top:20px;">Edit Profile</button>
+      </div>
+      <!-- INFO PANELS -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="glass-card p-6">
+          <div style="font-size:14px;font-weight:700;margin-bottom:16px;">Personal Information</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Full Name</div><input class="glass-input" value="Aisha Kamara"/></div>
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Date of Birth</div><input class="glass-input" value="14 March 2008"/></div>
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Email</div><input class="glass-input" value="aisha.k@school.ug"/></div>
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Phone</div><input class="glass-input" value="+256 772 123456"/></div>
+          </div>
+        </div>
+        <div class="glass-card p-6">
+          <div style="font-size:14px;font-weight:700;margin-bottom:16px;">Guardian Information</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Guardian Name</div><input class="glass-input" value="Fatima Kamara"/></div>
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Relationship</div><input class="glass-input" value="Mother"/></div>
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Phone</div><input class="glass-input" value="+256 701 987654"/></div>
+            <div><div style="font-size:11px;color:rgba(226,232,240,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;">Email</div><input class="glass-input" value="fatima@gmail.com"/></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+            <button class="btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer style="margin-left:240px;background:rgba(0,0,0,0.95);border-top:1px solid rgba(255,255,255,0.06);padding:24px 32px;position:relative;z-index:1;">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-bottom:4px;">School Registration System</div>
+      <div style="font-size:11px;color:rgba(226,232,240,0.4);">© 2025 All rights reserved. Student Portal v1.0</div>
+    </div>
+    <div style="display:flex;gap:20px;font-size:12px;">
+      <a href="../pages/help-center.html" style="color:rgba(226,232,240,0.5);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#ff6b4a'" onmouseout="this.style.color='rgba(226,232,240,0.5)'">Help Center</a>
+      <a href="../pages/privacy-policy.html" style="color:rgba(226,232,240,0.5);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#ff6b4a'" onmouseout="this.style.color='rgba(226,232,240,0.5)'">Privacy Policy</a>
+      <a href="../pages/contact.html" style="color:rgba(226,232,240,0.5);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#ff6b4a'" onmouseout="this.style.color='rgba(226,232,240,0.5)'">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const SUBJECTS = [
+  { name:'Mathematics', teacher:'Mr. Ssemakula', cat1:82, cat2:78, mid:80, color:'#f04923' },
+  { name:'Physics', teacher:'Ms. Nakato', cat1:74, cat2:76, mid:75, color:'#3b82f6' },
+  { name:'Chemistry', teacher:'Mr. Ochen', cat1:88, cat2:85, mid:86, color:'#10b981' },
+  { name:'Biology', teacher:'Ms. Apio', cat1:70, cat2:72, mid:71, color:'#f59e0b' },
+  { name:'English', teacher:'Mrs. Atim', cat1:79, cat2:81, mid:80, color:'#ec4899' },
+  { name:'Geography', teacher:'Mr. Okello', cat1:65, cat2:68, mid:66, color:'#de2d0c' },
+];
+function getGrade(a){ if(a>=80)return{g:'A',c:'#34d399'}; if(a>=70)return{g:'B+',c:'#60a5fa'}; if(a>=60)return{g:'B',c:'#fbbf24'}; return{g:'C',c:'#f87171'}; }
+
+// Build academics table
+const tbody = document.getElementById('subjects-tbody');
+SUBJECTS.forEach(s => {
+  const avg = Math.round((s.cat1+s.cat2+s.mid)/3);
+  const {g,c} = getGrade(avg);
+  const trend = avg >= 75 ? '↑' : avg >= 65 ? '→' : '↓';
+  const tc = avg >= 75 ? '#34d399' : avg >= 65 ? '#fbbf24' : '#f87171';
+  tbody.innerHTML += `<tr>
+    <td><div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:4px;height:32px;background:${s.color};border-radius:2px;"></div>
+      <span style="font-weight:600;">${s.name}</span></div></td>
+    <td style="color:rgba(226,232,240,0.5);font-size:12.5px;">${s.teacher}</td>
+    <td><span class="mono" style="font-size:13px;">${s.cat1}%</span></td>
+    <td><span class="mono" style="font-size:13px;">${s.cat2}%</span></td>
+    <td><span class="mono" style="font-size:13px;">${s.mid}%</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px;"><span class="mono" style="font-size:13px;font-weight:600;">${avg}%</span>
+      <div class="progress-track" style="width:60px;"><div class="progress-fill" style="width:${avg}%;background:${s.color};"></div></div></div></td>
+    <td><span style="font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:${c};">${g}</span></td>
+    <td style="font-size:16px;font-weight:700;color:${tc};">${trend}</td>
+  </tr>`;
+});
+
+// TIMETABLE DATA
+const TT = {
+  Mon: [
+    {t:'08:00',s:'Mathematics',r:'Room A3',c:'rgba(240,73,35,0.15)',bc:'rgba(240,73,35,0.4)'},
+    {t:'09:20',s:'English Language',r:'Room C1',c:'rgba(236,72,153,0.15)',bc:'rgba(236,72,153,0.4)'},
+    {t:'10:40',s:'BREAK',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'11:10',s:'Physics',r:'Lab 2',c:'rgba(59,130,246,0.15)',bc:'rgba(59,130,246,0.4)'},
+    {t:'12:30',s:'Geography',r:'Room B2',c:'rgba(222,45,12,0.15)',bc:'rgba(222,45,12,0.4)'},
+    {t:'13:30',s:'LUNCH',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'14:30',s:'Chemistry',r:'Lab 1',c:'rgba(16,185,129,0.15)',bc:'rgba(16,185,129,0.4)'},
+  ],
+  Tue: [
+    {t:'08:00',s:'Biology',r:'Lab 2',c:'rgba(245,158,11,0.15)',bc:'rgba(245,158,11,0.4)'},
+    {t:'09:20',s:'Mathematics',r:'Room A3',c:'rgba(240,73,35,0.15)',bc:'rgba(240,73,35,0.4)'},
+    {t:'10:40',s:'BREAK',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'11:10',s:'Chemistry',r:'Lab 1',c:'rgba(16,185,129,0.15)',bc:'rgba(16,185,129,0.4)'},
+    {t:'12:30',s:'English Language',r:'Room C1',c:'rgba(236,72,153,0.15)',bc:'rgba(236,72,153,0.4)'},
+    {t:'13:30',s:'LUNCH',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'14:30',s:'Physics',r:'Lab 2',c:'rgba(59,130,246,0.15)',bc:'rgba(59,130,246,0.4)'},
+  ],
+  Wed: [
+    {t:'08:00',s:'Geography',r:'Room B2',c:'rgba(222,45,12,0.15)',bc:'rgba(222,45,12,0.4)'},
+    {t:'09:20',s:'Physics',r:'Lab 2',c:'rgba(59,130,246,0.15)',bc:'rgba(59,130,246,0.4)'},
+    {t:'10:40',s:'BREAK',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'11:10',s:'Mathematics',r:'Room A3',c:'rgba(240,73,35,0.15)',bc:'rgba(240,73,35,0.4)'},
+    {t:'12:30',s:'Biology',r:'Lab 2',c:'rgba(245,158,11,0.15)',bc:'rgba(245,158,11,0.4)'},
+    {t:'13:30',s:'LUNCH',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'14:30',s:'Sports / P.E.',r:'School Grounds',c:'rgba(16,185,129,0.15)',bc:'rgba(16,185,129,0.4)'},
+  ],
+  Thu: [
+    {t:'08:00',s:'Mathematics',r:'Room A3',c:'rgba(240,73,35,0.15)',bc:'rgba(240,73,35,0.4)'},
+    {t:'09:20',s:'Physics',r:'Lab 2',c:'rgba(59,130,246,0.15)',bc:'rgba(59,130,246,0.4)'},
+    {t:'10:40',s:'BREAK',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'11:10',s:'Chemistry',r:'Lab 1',c:'rgba(16,185,129,0.15)',bc:'rgba(16,185,129,0.4)'},
+    {t:'12:30',s:'English Language',r:'Room C1',c:'rgba(236,72,153,0.15)',bc:'rgba(236,72,153,0.4)'},
+    {t:'13:30',s:'LUNCH',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'14:30',s:'Mathematics CAT',r:'Exam Hall',c:'rgba(239,68,68,0.15)',bc:'rgba(239,68,68,0.4)'},
+  ],
+  Fri: [
+    {t:'08:00',s:'English Language',r:'Room C1',c:'rgba(236,72,153,0.15)',bc:'rgba(236,72,153,0.4)'},
+    {t:'09:20',s:'Chemistry',r:'Lab 1',c:'rgba(16,185,129,0.15)',bc:'rgba(16,185,129,0.4)'},
+    {t:'10:40',s:'BREAK',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'11:10',s:'Geography',r:'Room B2',c:'rgba(222,45,12,0.15)',bc:'rgba(222,45,12,0.4)'},
+    {t:'12:30',s:'Biology',r:'Lab 2',c:'rgba(245,158,11,0.15)',bc:'rgba(245,158,11,0.4)'},
+    {t:'13:30',s:'LUNCH',r:'',c:'rgba(255,255,255,0.03)',bc:'rgba(255,255,255,0.08)'},
+    {t:'14:30',s:'Assembly / Games',r:'Main Hall',c:'rgba(245,158,11,0.15)',bc:'rgba(245,158,11,0.4)'},
+  ]
+};
+function renderTimetable(day){
+  const grid = document.getElementById('timetable-grid');
+  const periods = TT[day];
+  grid.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px;">${periods.map(p=>`
+    <div style="display:flex;gap:16px;align-items:center;">
+      <div style="min-width:52px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(226,232,240,0.4);">${p.t}</div>
+      <div style="width:2px;height:52px;background:${p.bc};border-radius:2px;flex-shrink:0;"></div>
+      <div style="flex:1;padding:12px 18px;border-radius:14px;background:${p.c};border:1px solid ${p.bc};">
+        <div style="font-size:14px;font-weight:600;color:#e2e8f0;">${p.s}</div>
+        ${p.r?`<div style="font-size:12px;color:rgba(226,232,240,0.45);margin-top:2px;">${p.r}</div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+}
+renderTimetable('Mon');
+
+function selectDay(el, day){
+  document.querySelectorAll('.day-tab').forEach(b=>{
+    b.style.background='rgba(255,255,255,0.05)';
+    b.style.color='rgba(226,232,240,0.6)';
+    b.style.border='1px solid rgba(255,255,255,0.1)';
+  });
+  el.style.background='linear-gradient(135deg,#f04923,#de2d0c)';
+  el.style.color='white';
+  el.style.border='none';
+  renderTimetable(day);
+}
+
+// ATTENDANCE BY SUBJECT
+const attSubjects = [
+  {name:'Mathematics',pct:92,color:'#f04923'},
+  {name:'Physics',pct:88,color:'#3b82f6'},
+  {name:'Chemistry',pct:85,color:'#10b981'},
+  {name:'Biology',pct:90,color:'#f59e0b'},
+  {name:'English',pct:82,color:'#ec4899'},
+  {name:'Geography',pct:78,color:'#de2d0c'},
+];
+const attEl = document.getElementById('att-subjects');
+attSubjects.forEach(s=>{
+  attEl.innerHTML+=`<div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
+      <span style="color:rgba(226,232,240,0.75);">${s.name}</span>
+      <span style="font-weight:600;font-family:'JetBrains Mono',monospace;color:${s.color};">${s.pct}%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${s.pct}%;background:${s.color};"></div></div>
+  </div>`;
+});
+
+// CALENDAR
+const cal = document.getElementById('att-calendar');
+const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+days.forEach(d=>{ cal.innerHTML+=`<div style="font-size:11px;color:rgba(226,232,240,0.3);text-align:center;padding:4px 0;font-weight:600;">${d}</div>`; });
+const statuses = ['','','','',1,1,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,0,1,1,1,0,0,1,1,1];
+statuses.forEach((s,i)=>{
+  if(s===''){cal.innerHTML+=`<div></div>`;return;}
+  const bg=s===1?'rgba(16,185,129,0.35)':'rgba(239,68,68,0.35)';
+  const br=s===1?'rgba(16,185,129,0.5)':'rgba(239,68,68,0.5)';
+  cal.innerHTML+=`<div style="height:36px;border-radius:8px;background:${bg};border:1px solid ${br};display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(226,232,240,0.7);font-family:'JetBrains Mono',monospace;">${i}</div>`;
+});
+
+// FEES BREAKDOWN
+const feeRows = [
+  {label:'Tuition Fee',amount:'600,000',paid:true},
+  {label:'Development Levy',amount:'150,000',paid:true},
+  {label:'Boarding Fee',amount:'180,000',paid:false},
+  {label:'Exam Registration',amount:'50,000',paid:false},
+  {label:'ICT / Library',amount:'20,000',paid:true},
+];
+const fbEl = document.getElementById('fee-breakdown-rows');
+feeRows.forEach(r=>{
+  fbEl.innerHTML+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div>
+      <div style="font-size:13.5px;font-weight:500;">${r.label}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span class="mono" style="font-size:13px;">${r.amount} UGX</span>
+      <span class="badge ${r.paid?'badge-green':'badge-amber'}">${r.paid?'Paid':'Pending'}</span>
+    </div>
+  </div>`;
+});
+fbEl.innerHTML+=`<div style="display:flex;justify-content:space-between;padding:14px 0 0;font-weight:700;">
+  <span>Total Due This Term</span>
+  <span class="mono" style="color:#34d399;font-size:15px;">1,000,000 UGX</span>
+</div>`;
+
+// PAYMENT HISTORY
+const payments = [
+  {date:'12 Jan 2025',desc:'Term 2 — Partial',method:'MTN MoMo',amt:'300,000',status:'Confirmed'},
+  {date:'8 Jan 2025',desc:'ICT Levy',method:'Airtel Money',amt:'20,000',status:'Confirmed'},
+  {date:'15 Nov 2024',desc:'Term 1 — Full',method:'Bank',amt:'1,000,000',status:'Confirmed'},
+  {date:'5 Nov 2024',desc:'Term 1 Attempt',method:'MTN MoMo',amt:'500,000',status:'Failed'},
+];
+const phEl = document.getElementById('payment-history');
+payments.forEach(p=>{
+  const sc = p.status==='Confirmed'?'badge-green':'badge-red';
+  phEl.innerHTML+=`<tr>
+    <td class="mono" style="font-size:12px;color:rgba(226,232,240,0.5);">${p.date}</td>
+    <td style="font-weight:500;">${p.desc}</td>
+    <td style="color:rgba(226,232,240,0.5);font-size:12.5px;">${p.method}</td>
+    <td class="mono" style="font-weight:600;">${p.amt}</td>
+    <td><span class="badge ${sc}">${p.status}</span></td>
+  </tr>`;
+});
+
+// NOTICES
+const notices = [
+  {title:'Mock Exam Timetable Released',body:'End of Term Mock examinations will begin 5th May 2025. Students must be in full uniform. All fees must be cleared to sit.',time:'2 hours ago',tag:'Urgent',tc:'badge-red'},
+  {title:'Sports Day — 2nd May 2025',body:'All students and staff are required to report to the sports grounds by 8:00 AM. Inter-house competitions will be held throughout the day.',time:'Yesterday',tag:'Event',tc:'badge-blue'},
+  {title:'Fee Clearance Deadline',body:'Students with outstanding balances must clear all fees by 30th April 2025. Failure to do so will result in being blocked from examinations.',time:'3 days ago',tag:'Finance',tc:'badge-amber'},
+  {title:'New Computer Lab Open',body:'The ICT block computer lab is now fully operational. Students can use it from Monday to Friday between 4:00 PM and 6:00 PM.',time:'1 week ago',tag:'Facility',tc:'badge-green'},
+  {title:'UNEB Registration Update',body:'All Senior 4 and Senior 6 students should confirm their UNEB registration details with the Deputy Headteacher before end of term.',time:'2 weeks ago',tag:'Academic',tc:'badge-purple'},
+];
+const nEl = document.getElementById('notices-list');
+notices.forEach(n=>{
+  nEl.innerHTML+=`<div class="announcement-card" style="padding:20px 22px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+      <div style="font-size:15px;font-weight:700;color:#e2e8f0;">${n.title}</div>
+      <span class="badge ${n.tc}" style="flex-shrink:0;margin-left:12px;">${n.tag}</span>
+    </div>
+    <div style="font-size:13px;color:rgba(226,232,240,0.55);line-height:1.6;margin-bottom:10px;">${n.body}</div>
+    <div style="font-size:11.5px;color:rgba(226,232,240,0.3);">${n.time}</div>
+  </div>`;
+});
+
+// NAV
+const pageTitles = {
+  dashboard: ['Good morning, Aisha ✨','Thursday, 24 April 2025 · Term 2, Week 8'],
+  academics: ['Academic Results','Term 2 · 2024/25'],
+  timetable: ['Class Timetable','S.5 Science · Term 2'],
+  attendance: ['Attendance Record','Term 2 · 62 school days'],
+  fees: ['School Fees','Term 2 · 2024/25'],
+  notices: ['School Notices','Stay informed'],
+  profile: ['My Profile','Aisha Kamara · S.5 Science'],
+};
+function showPage(id, navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  const [title, sub] = pageTitles[id]||['Portal',''];
+  document.getElementById('page-title').textContent = title;
+  document.getElementById('page-subtitle').textContent = sub;
+}
+
+// PAYMENT
+let selectedMethod = 'MTN Mobile Money';
+function selectMethod(el, method){
+  document.querySelectorAll('.method-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMethod = method;
+  ['MTN Mobile Money','Airtel Money','Bank Transfer'].forEach(m=>{
+    const dot = document.getElementById('dot-'+m);
+    if(dot){
+      if(m===method){
+        dot.style.background='linear-gradient(135deg,#f04923,#de2d0c)';
+        dot.style.border='none';
+        dot.innerHTML=`<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+      } else {
+        dot.style.background='rgba(255,255,255,0.08)';
+        dot.style.border='1.5px solid rgba(255,255,255,0.15)';
+        dot.innerHTML='';
+      }
+    }
+  });
+}
+function processPay(){
+  const btn = document.querySelector('.pay-btn-glow');
+  btn.textContent='Processing...';
+  btn.style.opacity='0.7';
+  btn.disabled=true;
+  setTimeout(()=>{
+    document.getElementById('pay-form-section').style.display='none';
+    document.getElementById('pay-success').style.display='block';
+  },2000);
+}
+function resetPay(){
+  document.getElementById('pay-success').style.display='none';
+  document.getElementById('pay-form-section').style.display='block';
+  const btn = document.querySelector('.pay-btn-glow');
+  if(btn){btn.textContent='Confirm & Pay UGX 350,000';btn.style.opacity='1';btn.disabled=false;}
+}
+</script>
+</body>
+</html>
